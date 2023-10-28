@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   bondflix-spa:
-    container_name: bondflix-spa-service
+    container_name: bondflix-spa-service-${ENVIRONMENT}
     build:
       context: .
       dockerfile: ./dockerfile/Dockerfile.${ENVIRONMENT}
