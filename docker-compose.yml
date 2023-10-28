@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  bondflix-spa:
+    container_name: bondflix-spa-service
+    build:
+      context: .
+      dockerfile: ./dockerfile/Dockerfile.${ENVIRONMENT}
+    ports:
+      - "5173:5173"
+      - "4173:4173"
+    volumes:
+      - ./bondflix-spa-service:/app
+      - /app/node_modules
+    networks:
+      - bondflix-spa
+networks:
+  bondflix-spa:

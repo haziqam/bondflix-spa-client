@@ -1,0 +1,17 @@
+FROM node:lts-alpine
+
+WORKDIR /app
+
+COPY ./bondflix-spa-service/package.json .
+
+COPY ./bondflix-spa-service/yarn.lock .
+
+RUN yarn
+
+COPY ./bondflix-spa-service .
+
+EXPOSE 5173
+
+RUN yarn build
+
+CMD ["yarn", "preview"]
