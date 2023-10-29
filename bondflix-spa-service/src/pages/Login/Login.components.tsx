@@ -1,25 +1,45 @@
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
-import "primeicons/primeicons.css";
-import { Card } from 'primereact/card';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { useState } from 'react';
+import { Card } from "primereact/card";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import { useState } from "react";
 
 export function LoginForm() {
-    const [username, setusername] = useState("")
+    const [loginFormData, setLoginFormData] = useState<LoginFormData>({
+        identifier: "",
+        password: "",
+    });
+
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLoginFormData({ ...loginFormData, [e.target.name]: e.target.value });
+    };
 
     const footer = (
         <>
-            <Button label="Login" icon="pi pi-check" />
-            <Button label="Cancel" severity="secondary" icon="pi pi-times" style={{ marginLeft: '0.5em' }} />
+            <Button
+                label="Login"
+                onClick={() => {
+                    console.log(loginFormData);
+                }}
+            />
         </>
     );
+
     return (
         <Card title="Login" footer={footer}>
             <form>
-                <InputText value={username} onChange={(e) => setusername(e.target.value)} />
+                <InputText
+                    value={loginFormData.identifier}
+                    name="username"
+                    onChange={handleFormChange}
+                />
+                <InputText
+                    value={loginFormData.password}
+                    name="password"
+                    onChange={handleFormChange}
+                />
             </form>
         </Card>
-    )
+    );
 }
