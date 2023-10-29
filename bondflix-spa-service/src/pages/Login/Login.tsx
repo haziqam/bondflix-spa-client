@@ -1,9 +1,9 @@
 import { LoginForm } from "./Login.components";
 
 export function Login() {
-    return(
+    return (
         <>
-            <LoginForm/>
+            <LoginForm />
         </>
-    )
+    );
 }
