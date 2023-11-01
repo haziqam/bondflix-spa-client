@@ -1,12 +1,9 @@
 import "./App.css";
-import { Login } from "./pages/Login/Login";
+import { usePageNavigation } from "./contexts/PageNavigation";
 
 function App() {
-    return (
-        <>
-            <Login />
-        </>
-    );
+    const { currentPage } = usePageNavigation();
+    return <>{currentPage}</>;
 }
 
 export default App;
