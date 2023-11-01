@@ -1,12 +1,13 @@
-import { useEffect } from "react";
 import { autoLogin } from "../../services/auth.service";
+import { usePageNavigation } from "../../contexts/PageNavigation";
+import { UserDashboard } from "../UserDashboard/UserDashboard";
+import { useQuery } from "@tanstack/react-query";
 
 export function useAutoLogin() {
-    useEffect(() => {
-        autoLogin().then((response) => {
-            if (response.success) {
-                // redirect to main
-            }
-        });
-    }, []);
+    const { navigateTo } = usePageNavigation();
+    const query = useQuery({ queryKey: ["AUTO-LOGIN"], queryFn: autoLogin });
+    if (query.data?.success) {
+        navigateTo(<UserDashboard />);
+    }
+    return query;
 }

@@ -1,9 +1,7 @@
 import { LoginForm } from "./Login.components";
+import { useAutoLogin } from "./Login.hook";
 
 export function Login() {
-    return (
-        <>
-            <LoginForm />
-        </>
-    );
+    const { isLoading } = useAutoLogin();
+    return <>{isLoading ? null : <LoginForm />}</>;
 }

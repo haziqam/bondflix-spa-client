@@ -27,19 +27,19 @@ export function LoginForm() {
         setLoginFormData({ ...loginFormData, [e.target.name]: e.target.value });
     };
 
+    const handleLogin = async () => {
+        // TODO: use react query to handle loading state
+        const response = await login(loginFormData);
+        if (response.success) {
+            navigateTo(<UserDashboard />);
+        } else {
+            console.log("Wrong!");
+        }
+    };
+
     const footer = (
         <>
-            <Button
-                label="Login"
-                onClick={async () => {
-                    const response = await login(loginFormData);
-                    if (response.success) {
-                        navigateTo(<UserDashboard />);
-                    } else {
-                        console.log("Wrong!");
-                    }
-                }}
-            />
+            <Button label="Login" onClick={handleLogin} />
         </>
     );
 

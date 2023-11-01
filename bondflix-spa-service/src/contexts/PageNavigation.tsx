@@ -32,10 +32,8 @@ export const PageNavigationContextProvider: React.FC<
     const [currentPage, setCurrentPage] = useState<Page | null>(<Login />);
 
     const navigateTo = (page: Page) => {
-        setCurrentPage(null);
-        setTimeout(() => {
-            setCurrentPage(page);
-        }, 100);
+        // setCurrentPage(null);
+        setCurrentPage(page);
     };
 
     return (
