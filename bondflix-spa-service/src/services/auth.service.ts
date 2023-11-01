@@ -2,10 +2,10 @@ import axios from "../lib/axios";
 
 export async function login(data: LoginFormData): Promise<ResponseData> {
     try {
-        const resposne = await axios.post("/auth/login", data, {
+        const response = await axios.post("/auth/login", data, {
             withCredentials: true,
         });
-        return resposne.data as ResponseData;
+        return response.data as ResponseData;
     } catch (error) {
         return {
             success: false,
@@ -17,10 +17,26 @@ export async function login(data: LoginFormData): Promise<ResponseData> {
 
 export async function autoLogin(): Promise<ResponseData> {
     try {
-        const resposne = await axios.get("/auth/autologin", {
+        const response = await axios.get("/auth/autologin", {
             withCredentials: true,
         });
-        return resposne.data as ResponseData;
+        return response.data as ResponseData;
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+            data: null,
+        };
+    }
+}
+
+export async function logout(): Promise<ResponseData> {
+    try {
+        const response = await axios.get("/auth/logout", {
+            withCredentials: true,
+        });
+        console.log(response.data);
+        return response.data as ResponseData;
     } catch (error) {
         return {
             success: false,
