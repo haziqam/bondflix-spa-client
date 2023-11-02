@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { Login } from "../pages/Login/Login";
 
 type Page = ReactNode;
 
 type PageNavigationContextData = {
-    currentPage: Page | null;
-    navigateTo: (page: Page) => void;
+    nextPage: Page | null;
+    setNextPage: (page: Page) => void;
 };
 
 const PageNavigationContext = createContext<PageNavigationContextData | null>(
@@ -29,15 +28,10 @@ type PageNavigationContextProviderProps = {
 export const PageNavigationContextProvider: React.FC<
     PageNavigationContextProviderProps
 > = ({ children }) => {
-    const [currentPage, setCurrentPage] = useState<Page | null>(<Login />);
-
-    const navigateTo = (page: Page) => {
-        // setCurrentPage(null);
-        setCurrentPage(page);
-    };
+    const [nextPage, setNextPage] = useState<Page | null>(null);
 
     return (
-        <PageNavigationContext.Provider value={{ currentPage, navigateTo }}>
+        <PageNavigationContext.Provider value={{ nextPage, setNextPage }}>
             {children}
         </PageNavigationContext.Provider>
     );

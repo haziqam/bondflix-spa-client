@@ -6,9 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Password } from "primereact/password";
 import { login } from "../../services/auth.service";
-import { usePageNavigation } from "../../contexts/PageNavigation";
-import { UserDashboard } from "../UserDashboard/UserDashboard";
-
+import { useNavigate } from "react-router-dom";
 //TODO:
 /**
  * 1. Validasi field
@@ -16,12 +14,11 @@ import { UserDashboard } from "../UserDashboard/UserDashboard";
  */
 
 export function LoginForm() {
+    const navigate = useNavigate();
     const [loginFormData, setLoginFormData] = useState<LoginFormData>({
         identifier: "",
         password: "",
     });
-
-    const { navigateTo } = usePageNavigation();
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoginFormData({ ...loginFormData, [e.target.name]: e.target.value });
@@ -31,7 +28,7 @@ export function LoginForm() {
         // TODO: use react query to handle loading state
         const response = await login(loginFormData);
         if (response.success) {
-            navigateTo(<UserDashboard />);
+            navigate("/dashboard");
         } else {
             console.log("Wrong!");
         }
