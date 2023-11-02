@@ -15,7 +15,7 @@ export async function login(data: LoginFormData): Promise<ResponseData> {
     }
 }
 
-export async function autoLogin(): Promise<ResponseData> {
+export async function authorize(): Promise<ResponseData> {
     try {
         const response = await axios.get("/auth/autologin", {
             withCredentials: true,
