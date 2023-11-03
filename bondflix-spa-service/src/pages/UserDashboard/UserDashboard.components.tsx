@@ -2,9 +2,11 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import { Button } from "primereact/button";
 import { logout } from "../../services/auth.service";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
 import { Toast } from "primereact/toast";
+import { useAuthorize } from "../../hooks/useAuthorize";
+import { Loading } from "../../shared-components/Loading";
 
 export function Something() {
     const navigate = useNavigate();
@@ -30,5 +32,30 @@ export function Something() {
             </Button>
             <Button onClick={handleLogout}>Logout</Button>
         </div>
+    );
+}
+
+export function DashboardBaseComponent() {
+    const isAuthorized = useAuthorize();
+    const navigate = useNavigate();
+    if (isAuthorized === false) {
+        setTimeout(() => {
+            navigate("/login");
+        }, 3000);
+        return <Loading />;
+    }
+    return (
+        <>
+            <DashboardNavbar />
+            <Outlet />
+        </>
+    );
+}
+
+function DashboardNavbar() {
+    return (
+        <nav>
+            <h2>This is navbar</h2>
+        </nav>
     );
 }
