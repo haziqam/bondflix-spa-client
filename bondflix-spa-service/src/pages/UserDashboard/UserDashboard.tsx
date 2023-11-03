@@ -1,5 +1,5 @@
-import { Something } from "./UserDashboard.components";
+import { DashboardContent } from "./UserDashboard.components";
 
 export function UserDashboard() {
-    return <Something />;
+    return <DashboardContent />;
 }

@@ -7,6 +7,8 @@ import { Button } from "primereact/button";
 import { Password } from "primereact/password";
 import { login } from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../hooks/useToast";
+import { Toast } from "primereact/toast";
 //TODO:
 /**
  * 1. Validasi field
@@ -19,6 +21,7 @@ export function LoginForm() {
         identifier: "",
         password: "",
     });
+    const { toastRef, showError } = useToast();
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoginFormData({ ...loginFormData, [e.target.name]: e.target.value });
@@ -30,7 +33,7 @@ export function LoginForm() {
         if (response.success) {
             navigate("/dashboard");
         } else {
-            console.log("Wrong!");
+            showError("Wrong credentials mas!");
         }
     };
 
@@ -41,24 +44,27 @@ export function LoginForm() {
     );
 
     return (
-        <Card title="Login" footer={footer}>
-            <form>
-                <label htmlFor="identifier">Username or email</label>
-                <InputText
-                    id="identifier"
-                    name="identifier"
-                    value={loginFormData.identifier}
-                    onChange={handleFormChange}
-                />
-                <label htmlFor="password">Password</label>
-                <Password
-                    id="password"
-                    name="password"
-                    value={loginFormData.password}
-                    onChange={handleFormChange}
-                    feedback={false}
-                />
-            </form>
-        </Card>
+        <>
+            <Toast ref={toastRef} position="bottom-right" />
+            <Card title="Login" footer={footer}>
+                <form>
+                    <label htmlFor="identifier">Username or email</label>
+                    <InputText
+                        id="identifier"
+                        name="identifier"
+                        value={loginFormData.identifier}
+                        onChange={handleFormChange}
+                    />
+                    <label htmlFor="password">Password</label>
+                    <Password
+                        id="password"
+                        name="password"
+                        value={loginFormData.password}
+                        onChange={handleFormChange}
+                        feedback={false}
+                    />
+                </form>
+            </Card>
+        </>
     );
 }
