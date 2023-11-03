@@ -1,61 +1,121 @@
 import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/lara-light-blue/theme.css";
+import "primeicons/primeicons.css";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "primereact/button";
-import { logout } from "../../services/auth.service";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useToast } from "../../hooks/useToast";
+import { Sidebar } from "primereact/sidebar";
+import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
+import { Outlet, useNavigate } from "react-router-dom";
+import { logout } from "../../services/auth.service";
 import { useAuthorize } from "../../hooks/useAuthorize";
-import { Loading } from "../../shared-components/Loading";
+import { useToast } from "../../hooks/useToast";
+import logo from "../../assets/logo.png";
 
-export function Something() {
-    const navigate = useNavigate();
-    const handleLogout = async () => {
-        // TODO: use react query to handle loading state
-        const response = await logout();
-        if (response.success) {
-            navigate("/login");
-        }
-    };
-
-    const { toastRef, showSuccess } = useToast();
-    return (
-        <div>
-            <Toast ref={toastRef} />
-            <h1>Welcome to the dashboard</h1>
-            <Button
-                onClick={() => {
-                    showSuccess("Berhasil melakukan sesuatu");
-                }}
-            >
-                Test toast
-            </Button>
-            <Button onClick={handleLogout}>Logout</Button>
-        </div>
-    );
+export function DashboardContent() {
+    return <div>testt</div>;
 }
 
 export function DashboardBaseComponent() {
-    const isAuthorized = useAuthorize();
+    const { isAuthorized } = useAuthorize();
     const navigate = useNavigate();
+
     if (isAuthorized === false) {
-        setTimeout(() => {
-            navigate("/login");
-        }, 3000);
-        return <Loading />;
+        navigate("/login");
     }
+
+    const [sidebarVisible, setSidebarVisible] = useState(false);
+
     return (
         <>
-            <DashboardNavbar />
+            <Masthead setSidebarVisible={setSidebarVisible} />
+            <DashboardSidebar
+                sidebarVisible={sidebarVisible}
+                setSidebarVisible={setSidebarVisible}
+            />
             <Outlet />
         </>
     );
 }
 
-function DashboardNavbar() {
+function DashboardSidebar(props: {
+    sidebarVisible: boolean;
+    setSidebarVisible: Dispatch<SetStateAction<boolean>>;
+}) {
+    const { sidebarVisible, setSidebarVisible } = props;
+    const navigate = useNavigate();
+    const { toastRef, showSuccess, showError } = useToast();
+
+    const handleLogout = async () => {
+        const response = await logout();
+        if (response.success) {
+            showSuccess("Logged out successfully");
+            setTimeout(() => {
+                navigate("/login");
+            }, 1000);
+        } else {
+            showError(`Failed to log out: ${response.message}`);
+        }
+    };
+
     return (
-        <nav>
-            <h2>This is navbar</h2>
-        </nav>
+        <>
+            <Toast ref={toastRef} position="bottom-right" />
+            <Sidebar
+                visible={sidebarVisible}
+                position="left"
+                onHide={() => setSidebarVisible(false)}
+                // pt={{ closeIcon: }}
+            >
+                <h2>Left Sidebar</h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+                <Button onClick={handleLogout}>Logout</Button>
+            </Sidebar>
+        </>
+    );
+}
+
+function Masthead(props: {
+    setSidebarVisible: Dispatch<SetStateAction<boolean>>;
+}) {
+    const { setSidebarVisible } = props;
+    return (
+        <div
+            style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "start",
+                gap: "120px",
+            }}
+        >
+            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                <Button
+                    icon="pi pi-bars"
+                    onClick={() => {
+                        setSidebarVisible(true);
+                    }}
+                />
+                <img
+                    src={logo}
+                    alt="Bondflix logo"
+                    style={{ width: "150px" }}
+                />
+            </div>
+            <SearchBar />
+        </div>
+    );
+}
+
+function SearchBar() {
+    return (
+        <div className="p-inputgroup" style={{ width: "400px" }}>
+            <InputText placeholder="Search" />
+            <Button icon="pi pi-search" />
+        </div>
     );
 }
