@@ -28,7 +28,6 @@ export function LoginForm() {
     };
 
     const handleLogin = async () => {
-        // TODO: use react query to handle loading state
         const response = await login(loginFormData);
         if (response.success) {
             navigate("/dashboard");
