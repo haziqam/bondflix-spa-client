@@ -14,6 +14,8 @@ import { useToast } from "../../hooks/useToast";
 import logo from "../../assets/logo.png";
 import { Card } from "primereact/card";
 import thumbnail1 from "../../assets/thumbnail1.jpg";
+import { Menu } from "primereact/menu";
+import { MenuItem } from "primereact/menuitem";
 
 export function DashboardBaseComponent() {
     const { isAuthorized } = useAuthorize();
@@ -46,31 +48,107 @@ export function DashboardContent() {
                 display: "grid",
                 gridTemplateColumns: "repeat(4, 1fr)",
                 gap: "20px 20px",
+                padding: "0 15px 15px 15px",
             }}
         >
-            <ContentCard />
-            <ContentCard />
-            <ContentCard />
-            <ContentCard />
-            <ContentCard />
-            <ContentCard />
-            <ContentCard />
-            <ContentCard />
+            <ContentCard
+                title="Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque error molestiae placeat accusantium tenetur sunt at aliquam fugit consequuntur. Exercitationem non beatae voluptatum est placeat distinctio, corporis ut quia quae."
+                channelName="Mr Beast"
+                thumbnailSrc={thumbnail1}
+                id={10}
+            />
         </div>
     );
 }
 
-function ContentCard() {
+function ContentCard(props: {
+    title: string;
+    channelName: string;
+    thumbnailSrc: string;
+    id: number;
+}) {
+    const { title, channelName, thumbnailSrc, id } = props;
     const ContentHeader = (
         <img
-            src={thumbnail1}
+            src={thumbnailSrc}
             alt="Video Thumbnail"
             style={{ objectFit: "cover" }}
         />
     );
-    const ContentFooter = <div>Lorem, ipsum dolor sit amet</div>;
 
-    return <Card header={ContentHeader} footer={ContentFooter}></Card>;
+    const ContentFooter = () => {
+        return (
+            <div>
+                <div
+                    style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: "2",
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                    }}
+                >
+                    <h2 style={{ margin: "0", fontSize: "1rem" }}>{title}</h2>
+                </div>
+
+                <div
+                    style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: "1",
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        fontSize: "0.75rem",
+                        paddingTop: "5px",
+                        color: "#9b9b9b",
+                    }}
+                >
+                    {channelName}
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <Card
+            header={ContentHeader}
+            footer={ContentFooter}
+            pt={{
+                footer: {
+                    style: {
+                        paddingTop: "0",
+                    },
+                },
+                body: {
+                    style: {
+                        padding: "0.5rem",
+                    },
+                },
+            }}
+        ></Card>
+    );
+}
+
+//TODO: move to shared component
+function SubscriptionsIcon() {
+    return (
+        <>
+            <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+            />
+            <span
+                className="material-symbols-outlined"
+                style={{
+                    height: "16px",
+                    width: "16px",
+                    fontWeight: "lighter",
+                    color: "#6c757d",
+                    marginRight: "8px",
+                }}
+            >
+                Subscriptions
+            </span>
+        </>
+    );
 }
 
 function DashboardSidebar(props: {
@@ -93,6 +171,13 @@ function DashboardSidebar(props: {
         }
     };
 
+    const items: MenuItem[] = [
+        { label: "Subscriptions", icon: <SubscriptionsIcon /> },
+        { label: "Upload", icon: "pi pi-video" },
+        { label: "My Channel", icon: "pi pi-user" },
+        { label: "Logout", icon: "pi pi-sign-out", command: handleLogout },
+    ];
+
     return (
         <>
             <Toast ref={toastRef} position="bottom-right" />
@@ -100,16 +185,13 @@ function DashboardSidebar(props: {
                 visible={sidebarVisible}
                 position="left"
                 onHide={() => setSidebarVisible(false)}
+                header={<BondflixLogo />}
                 closeIcon={<SidebarMenuIcon />}
+                style={{
+                    width: "250px",
+                }}
             >
-                <h2>Left Sidebar</h2>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
-                <Button onClick={handleLogout}>Logout</Button>
+                <Menu model={items} />
             </Sidebar>
         </>
     );
@@ -126,6 +208,11 @@ function Masthead(props: {
                 alignItems: "center",
                 justifyContent: "start",
                 gap: "120px",
+                position: "sticky",
+                top: "0",
+                left: "0",
+                backgroundColor: "white",
+                padding: "10px",
             }}
         >
             <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -144,6 +231,7 @@ function Masthead(props: {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        cursor: "pointer",
                     }}
                     onClick={() => {
                         setSidebarVisible(true);
@@ -151,15 +239,16 @@ function Masthead(props: {
                 >
                     <SidebarMenuIcon />
                 </button>
-                <img
-                    src={logo}
-                    alt="Bondflix logo"
-                    style={{ width: "150px" }}
-                />
+                <BondflixLogo />
             </div>
             <SearchBar />
         </div>
     );
+}
+
+//TODO: move to shared component
+function BondflixLogo() {
+    return <img src={logo} alt="Bondflix logo" style={{ width: "150px" }} />;
 }
 
 function SearchBar() {
