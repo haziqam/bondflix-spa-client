@@ -6,7 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Password } from "primereact/password";
 import { login } from "../../services/auth.service";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
 import { Toast } from "primereact/toast";
 //TODO:
@@ -45,23 +45,47 @@ export function LoginForm() {
     return (
         <>
             <Toast ref={toastRef} position="bottom-right" />
-            <Card title="Login" footer={footer}>
+            <Card
+                title="Login"
+                footer={footer}
+                style={{
+                    width: "400px",
+                }}
+            >
                 <form>
-                    <label htmlFor="identifier">Username or email</label>
-                    <InputText
-                        id="identifier"
-                        name="identifier"
-                        value={loginFormData.identifier}
-                        onChange={handleFormChange}
-                    />
-                    <label htmlFor="password">Password</label>
-                    <Password
-                        id="password"
-                        name="password"
-                        value={loginFormData.password}
-                        onChange={handleFormChange}
-                        feedback={false}
-                    />
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "20px",
+                        }}
+                    >
+                        <div>
+                            <label style={{ display: "block" }}>
+                                Username or email
+                            </label>
+                            <InputText
+                                id="identifier"
+                                name="identifier"
+                                value={loginFormData.identifier}
+                                onChange={handleFormChange}
+                            />
+                        </div>
+                        <div>
+                            <label style={{ display: "block" }}>Password</label>
+                            <Password
+                                id="password"
+                                name="password"
+                                value={loginFormData.password}
+                                onChange={handleFormChange}
+                                feedback={false}
+                            />
+                        </div>
+                        <div>
+                            Don't have an account yet?{" "}
+                            <Link to={"/register"}>Register</Link>
+                        </div>
+                    </div>
                 </form>
             </Card>
         </>

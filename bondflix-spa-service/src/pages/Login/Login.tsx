@@ -3,5 +3,16 @@ import { LoginForm } from "./Login.components";
 
 export function Login() {
     useAutoLogin(true);
-    return <LoginForm />;
+    return (
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+            }}
+        >
+            <LoginForm />
+        </div>
+    );
 }
