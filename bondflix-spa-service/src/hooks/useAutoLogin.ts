@@ -8,11 +8,11 @@ export function useAutoLogin(isInLoginPage: boolean = false) {
         if (isAuthorized === true) {
             setTimeout(() => {
                 navigate("/dashboard");
-            }, 3000);
+            }, 1500);
         } else if (!isInLoginPage && isAuthorized === false) {
             setTimeout(() => {
                 navigate("/login");
-            }, 3000);
+            }, 1500);
         }
     }
 }

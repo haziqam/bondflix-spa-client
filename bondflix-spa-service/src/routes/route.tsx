@@ -8,14 +8,16 @@ import { Login } from "../pages/Login/Login.tsx";
 import { Home } from "../pages/Home/Home.tsx";
 import { DashboardBaseComponent } from "../pages/UserDashboard/UserDashboard.components.tsx";
 import { Error } from "../pages/Error/Error.tsx";
+import { Register } from "../pages/Register/Register.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" errorElement={<Error />}>
             <Route index element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<DashboardBaseComponent />}>
-                <Route index element={<UserDashboard />} />
+            <Route path="/register" element={<Register />} />
+            <Route element={<DashboardBaseComponent />}>
+                <Route path="/dashboard" element={<UserDashboard />} />
             </Route>
         </Route>
     )

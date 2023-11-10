@@ -46,4 +46,17 @@ export async function logout(): Promise<ResponseData> {
     }
 }
 
-export function register() {}
+export async function register(data: RegisterFormData): Promise<ResponseData> {
+    try {
+        const response = await axios.post("/auth/register", data, {
+            withCredentials: true,
+        });
+        return response.data as ResponseData;
+    } catch (error) {
+        return {
+            success: false,
+            message: (error as Error).message,
+            data: null,
+        };
+    }
+}
