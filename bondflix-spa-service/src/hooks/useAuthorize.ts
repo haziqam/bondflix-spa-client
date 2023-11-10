@@ -6,12 +6,10 @@ export function useAuthorize() {
     const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
 
     useEffect(() => {
-        const performAuthorization = async () => {
-            const response = await authorize();
+        authorize().then((response) => {
             setIsAuthorized(response.success);
             setIsLoading(false);
-        };
-        performAuthorization();
+        });
     }, []);
 
     return { isLoading, isAuthorized };
