@@ -183,6 +183,14 @@ function DashboardSidebar(props: {
                 closeIcon={<HamburgerButtonIcon />}
                 style={{
                     width: "250px",
+                    zIndex: "100",
+                }}
+                pt={{
+                    header: {
+                        style: {
+                            paddingTop: "10px",
+                        },
+                    },
                 }}
             >
                 <Menu model={items} />
@@ -207,6 +215,7 @@ function Masthead(props: {
                 left: "0",
                 backgroundColor: "white",
                 padding: "10px",
+                zIndex: "99",
             }}
         >
             <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>

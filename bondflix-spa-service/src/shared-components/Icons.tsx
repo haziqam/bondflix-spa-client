@@ -42,6 +42,7 @@ export function LogoutIcon() {
 }
 
 export function SubscriptionsIcon() {
+    //TODO: move link to html head
     return (
         <>
             <link
