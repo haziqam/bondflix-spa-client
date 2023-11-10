@@ -11,11 +11,18 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { logout } from "../../services/auth.service";
 import { useAuthorize } from "../../hooks/useAuthorize";
 import { useToast } from "../../hooks/useToast";
-import logo from "../../assets/logo.png";
 import { Card } from "primereact/card";
 import thumbnail1 from "../../assets/thumbnail1.jpg";
 import { Menu } from "primereact/menu";
 import { MenuItem } from "primereact/menuitem";
+import {
+    SubscriptionsIcon,
+    UploadIcon,
+    MyChannelIcon,
+    LogoutIcon,
+    HamburgerButtonIcon,
+} from "../../shared-components/Icons";
+import { BondflixLogo } from "../../shared-components/Logo";
 
 export function DashboardBaseComponent() {
     const { isAuthorized } = useAuthorize();
@@ -48,7 +55,7 @@ export function DashboardContent() {
                 display: "grid",
                 gridTemplateColumns: "repeat(4, 1fr)",
                 gap: "20px 20px",
-                padding: "0 15px 15px 15px",
+                padding: "10px 15px 15px 15px",
             }}
         >
             <ContentCard
@@ -68,11 +75,16 @@ function ContentCard(props: {
     id: number;
 }) {
     const { title, channelName, thumbnailSrc, id } = props;
+    const navigate = useNavigate();
     const ContentHeader = (
         <img
             src={thumbnailSrc}
             alt="Video Thumbnail"
-            style={{ objectFit: "cover" }}
+            style={{
+                objectFit: "cover",
+                borderTopLeftRadius: "6px",
+                borderTopRightRadius: "6px",
+            }}
         />
     );
 
@@ -107,6 +119,10 @@ function ContentCard(props: {
         );
     };
 
+    const handleClick = () => {
+        navigate(`/watch?id=${id}`);
+    };
+
     return (
         <Card
             header={ContentHeader}
@@ -123,31 +139,9 @@ function ContentCard(props: {
                     },
                 },
             }}
+            className="ContentCard"
+            onClick={handleClick}
         ></Card>
-    );
-}
-
-//TODO: move to shared component
-function SubscriptionsIcon() {
-    return (
-        <>
-            <link
-                rel="stylesheet"
-                href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
-            />
-            <span
-                className="material-symbols-outlined"
-                style={{
-                    height: "16px",
-                    width: "16px",
-                    fontWeight: "lighter",
-                    color: "#6c757d",
-                    marginRight: "8px",
-                }}
-            >
-                Subscriptions
-            </span>
-        </>
     );
 }
 
@@ -173,9 +167,9 @@ function DashboardSidebar(props: {
 
     const items: MenuItem[] = [
         { label: "Subscriptions", icon: <SubscriptionsIcon /> },
-        { label: "Upload", icon: "pi pi-video" },
-        { label: "My Channel", icon: "pi pi-user" },
-        { label: "Logout", icon: "pi pi-sign-out", command: handleLogout },
+        { label: "Upload", icon: <UploadIcon /> },
+        { label: "My Channel", icon: <MyChannelIcon /> },
+        { label: "Logout", icon: <LogoutIcon />, command: handleLogout },
     ];
 
     return (
@@ -186,7 +180,7 @@ function DashboardSidebar(props: {
                 position="left"
                 onHide={() => setSidebarVisible(false)}
                 header={<BondflixLogo />}
-                closeIcon={<SidebarMenuIcon />}
+                closeIcon={<HamburgerButtonIcon />}
                 style={{
                     width: "250px",
                 }}
@@ -237,18 +231,13 @@ function Masthead(props: {
                         setSidebarVisible(true);
                     }}
                 >
-                    <SidebarMenuIcon />
+                    <HamburgerButtonIcon />
                 </button>
                 <BondflixLogo />
             </div>
             <SearchBar />
         </div>
     );
-}
-
-//TODO: move to shared component
-function BondflixLogo() {
-    return <img src={logo} alt="Bondflix logo" style={{ width: "150px" }} />;
 }
 
 function SearchBar() {
@@ -258,8 +247,4 @@ function SearchBar() {
             <Button icon="pi pi-search" />
         </div>
     );
-}
-
-function SidebarMenuIcon() {
-    return <i className="pi pi-bars"></i>;
 }

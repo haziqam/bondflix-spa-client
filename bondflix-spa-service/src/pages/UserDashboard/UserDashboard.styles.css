@@ -1,3 +1,7 @@
 .SidebarMenuButton:hover {
     background-color: #e9ecef !important;
 }
+
+.ContentCard:hover {
+    cursor: pointer;
+}
