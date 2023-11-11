@@ -3,6 +3,7 @@ import { TabMenu } from "primereact/tabmenu";
 import { Dispatch, SetStateAction, useState } from "react";
 import contentThumbnail from "../../assets/thumbnail1.jpg";
 import channelProfilePic from "../../temp-video/profile.png";
+import { Button } from "primereact/button";
 
 export function ResultsContent() {
     const [tabActiveIndex, setTabActiveIndex] = useState(0);
@@ -59,10 +60,6 @@ function ContentSearchResults() {
             <ContentResultsCard />
         </div>
     );
-}
-
-function ChannelSearchResults() {
-    return <h1>Ini channel</h1>;
 }
 
 function ContentResultsCard() {
@@ -130,6 +127,64 @@ function ContentResultsCard() {
                         sapiente at.
                     </p>
                 </section>
+            </div>
+        </Card>
+    );
+}
+
+function ChannelSearchResults() {
+    return (
+        <div
+            style={{
+                width: "60%",
+                marginTop: "16px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+            }}
+        >
+            <ChannelResultsCard />
+            <ChannelResultsCard />
+            <ChannelResultsCard />
+            <ChannelResultsCard />
+        </div>
+    );
+}
+
+function ChannelResultsCard() {
+    return (
+        <Card
+            pt={{
+                content: {
+                    style: {
+                        padding: "0",
+                    },
+                },
+            }}
+            style={{ backgroundColor: "#ececec" }}
+        >
+            <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+                <img
+                    src={channelProfilePic}
+                    alt="Channel profile picture"
+                    style={{
+                        width: "120px",
+                        height: "120px",
+                        borderRadius: "50%",
+                    }}
+                />
+                <section>
+                    <h2 style={{ margin: "0" }}>Channel Name</h2>
+                    <div style={{ color: "#a8a8a8" }}>@Username</div>
+                    <p>XXX Subscribers</p>
+                </section>
+                <Button
+                    style={{
+                        marginLeft: "200px",
+                    }}
+                >
+                    Subscribe
+                </Button>
             </div>
         </Card>
     );
