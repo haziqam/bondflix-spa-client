@@ -11,6 +11,7 @@ import { Error } from "../pages/Error/Error.tsx";
 import { Register } from "../pages/Register/Register.tsx";
 import { Watch } from "../pages/Watch/Watch.tsx";
 import { Subscription } from "../pages/Subscription/Subscription.tsx";
+import { Results } from "../pages/Results/Results.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -22,6 +23,7 @@ export const router = createBrowserRouter(
                 <Route path="/dashboard" element={<UserDashboard />} />
                 <Route path="/watch" element={<Watch />} />
                 <Route path="/subscriptions" element={<Subscription />} />
+                <Route path="/results" element={<Results />} />
             </Route>
         </Route>
     )
