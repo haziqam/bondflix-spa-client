@@ -1,5 +1,3 @@
-import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-light-blue/theme.css";
 import { useState } from "react";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";

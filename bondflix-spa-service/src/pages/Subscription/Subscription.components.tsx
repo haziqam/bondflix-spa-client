@@ -1,6 +1,6 @@
+import { Dispatch, SetStateAction, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "primereact/button";
 import { useToast } from "../../hooks/useToast";
 import { Toast } from "primereact/toast";

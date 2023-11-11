@@ -1,5 +1,3 @@
-import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primeicons/primeicons.css";
 import "./UserDashboard.styles.css";
 import { Dispatch, SetStateAction, useState } from "react";
