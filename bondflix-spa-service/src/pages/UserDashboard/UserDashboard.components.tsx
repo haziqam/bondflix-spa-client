@@ -118,7 +118,8 @@ function ContentCard(props: {
     };
 
     const handleClick = () => {
-        navigate(`/watch?id=${id}`);
+        const uri = `/watch?id=${id}`;
+        navigate(encodeURI(uri));
     };
 
     return (
@@ -255,10 +256,25 @@ function Masthead(props: {
 }
 
 function SearchBar() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate();
+
+    const handleSearchClick = () => {
+        if (searchQuery !== "") {
+            const uri = `/results?search_query=${searchQuery}`;
+            navigate(encodeURI(uri));
+        }
+    };
     return (
         <div className="p-inputgroup" style={{ width: "400px" }}>
-            <InputText placeholder="Search" />
-            <Button icon="pi pi-search" />
+            <InputText
+                value={searchQuery}
+                placeholder="Search"
+                onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                }}
+            />
+            <Button icon="pi pi-search" onClick={handleSearchClick} />
         </div>
     );
 }
