@@ -15,7 +15,7 @@ type Channel = {
 };
 
 export function SubscriptionTable() {
-    const [channels, setChannels] = useState<Channel[]>([
+    const [subscribedChannels, setSubscribedChannel] = useState<Channel[]>([
         {
             id: 111,
             username: "wkwkwkw",
@@ -23,42 +23,62 @@ export function SubscriptionTable() {
             profilePicSrc: profilePicSrc,
         },
         {
-            id: 111,
+            id: 112,
             username: "wkwkwkw",
-            name: "hellooo",
+            name: "my",
             profilePicSrc: profilePicSrc,
         },
         {
-            id: 111,
+            id: 113,
             username: "wkwkwkw",
-            name: "hellooo",
+            name: "name",
             profilePicSrc: profilePicSrc,
         },
         {
-            id: 111,
+            id: 114,
             username: "wkwkwkw",
-            name: "hellooo",
+            name: "is",
             profilePicSrc: profilePicSrc,
         },
         {
-            id: 111,
+            id: 115,
             username: "wkwkwkw",
-            name: "hellooo",
+            name: "haziq",
             profilePicSrc: profilePicSrc,
         },
     ]);
 
+    const { toastRef, showSuccess } = useToast();
+    const removeSubscribedChannel = (id: number) => {
+        const unsubscribedChannelUsername = subscribedChannels.find(
+            (el) => el.id === id
+        )?.username;
+        setSubscribedChannel((prev) => prev.filter((el) => el.id !== id));
+        showSuccess(
+            `Unsubscribed @${unsubscribedChannelUsername} successfully`
+        );
+    };
+
     return (
         <div style={{ minWidth: "700px" }}>
+            <Toast ref={toastRef} position="bottom-right" />
             <DataTable
-                value={channels}
+                value={subscribedChannels}
                 dataKey="id"
                 // loading={loading}
                 emptyMessage="No Subscriptions."
                 showGridlines
             >
                 <Column header="Channels" body={ChannelInfoTemplate} />
-                <Column header="Action" body={ChannelActionTemplate} />
+                <Column
+                    header="Action"
+                    body={(channel) => (
+                        <ChannelActionTemplate
+                            channel={channel}
+                            onUnsubscribe={removeSubscribedChannel}
+                        />
+                    )}
+                />
             </DataTable>
         </div>
     );
@@ -105,8 +125,12 @@ function ChannelInfoTemplate(channel: Channel) {
     );
 }
 
-function ChannelActionTemplate(channel: Channel) {
+function ChannelActionTemplate(props: {
+    channel: Channel;
+    onUnsubscribe: (id: number) => void;
+}) {
     const [dialogVisible, setDialogVisible] = useState(false);
+    const { channel, onUnsubscribe } = props;
 
     const handleUnscubscribe = () => {
         setDialogVisible(true);
@@ -118,6 +142,7 @@ function ChannelActionTemplate(channel: Channel) {
                 dialogVisible={dialogVisible}
                 setDialogVisible={setDialogVisible}
                 channel={channel}
+                onUnsubscribe={onUnsubscribe}
             />
             <Button severity="danger" onClick={handleUnscubscribe}>
                 Unsubscribe
@@ -130,15 +155,16 @@ function UnsubscribeConfirmDialog(props: {
     dialogVisible: boolean;
     setDialogVisible: Dispatch<SetStateAction<boolean>>;
     channel: Channel;
+    onUnsubscribe: (id: number) => void;
 }) {
-    const { toastRef, showSuccess } = useToast();
-    const { dialogVisible, setDialogVisible, channel } = props;
+    const { dialogVisible, setDialogVisible, channel, onUnsubscribe } = props;
     const { id, username, name } = channel;
 
     const handleUnscubscribe = () => {
         // unsubscribe API call
-        showSuccess(`Unsubscribed @${username} successfully`);
+        // if succeeded:
         setDialogVisible(false);
+        onUnsubscribe(id);
     };
 
     const dialogFooter = () => {
@@ -162,7 +188,6 @@ function UnsubscribeConfirmDialog(props: {
 
     return (
         <>
-            <Toast ref={toastRef} position="bottom-right" />
             <Dialog
                 visible={dialogVisible}
                 header={`Unsubscribe @${username}`}

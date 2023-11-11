@@ -3,7 +3,8 @@ import videoSample from "../../temp-video/video2.mp4";
 import { useSearchParams } from "react-router-dom";
 
 export function Watch() {
-    const [contentId] = useSearchParams();
+    // const [URLSearchParams] = useSearchParams();
+    // const contentId = URLSearchParams.get("id");
     // const {
     //     videoSrc
     //     title,
