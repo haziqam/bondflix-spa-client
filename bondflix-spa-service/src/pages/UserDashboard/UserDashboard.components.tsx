@@ -166,7 +166,14 @@ function DashboardSidebar(props: {
     };
 
     const items: MenuItem[] = [
-        { label: "Subscriptions", icon: <SubscriptionsIcon /> },
+        {
+            label: "Subscriptions",
+            icon: <SubscriptionsIcon />,
+            command: () => {
+                navigate("/subscriptions");
+                setSidebarVisible(false);
+            },
+        },
         { label: "Upload", icon: <UploadIcon /> },
         { label: "My Channel", icon: <MyChannelIcon /> },
         { label: "Logout", icon: <LogoutIcon />, command: handleLogout },
