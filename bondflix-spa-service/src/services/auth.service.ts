@@ -1,4 +1,4 @@
-import axios from "../lib/axios";
+import axios from "../lib/axios/axios";
 
 export async function login(data: LoginFormData): Promise<ResponseData> {
     try {

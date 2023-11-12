@@ -7,6 +7,8 @@ import { register } from "../../services/auth.service";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
 import { Toast } from "primereact/toast";
+import { RegisterSchema } from "../../lib/zod/auth.schema";
+import { ZodIssue } from "zod";
 //TODO:
 /**
  * 1. Validasi field
@@ -20,8 +22,10 @@ export function RegisterForm() {
         name: "",
         email: "",
         password: "",
+        confirmPassword: "",
     });
     const { toastRef, showSuccess, showError } = useToast();
+    const [inputError, setInputError] = useState<ZodIssue[]>([]);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRegisterFormData({
@@ -31,14 +35,22 @@ export function RegisterForm() {
     };
 
     const handleRegister = async () => {
-        const response = await register(registerFormData);
-        if (response.success) {
-            showSuccess("Registered successfully!");
-            setTimeout(() => {
-                navigate("/dashboard");
-            }, 1000);
+        setInputError([]);
+        const parseResult = RegisterSchema.safeParse(registerFormData);
+        if (parseResult.success) {
+            showSuccess("Betull");
+            // const response = await register(registerFormData);
+            // if (response.success) {
+            //     showSuccess("Registered successfully!");
+            //     setTimeout(() => {
+            //         navigate("/login");
+            //     }, 1000);
+            // } else {
+            //     showError("Wrong credentials mas!");
+            // }
         } else {
-            showError("Wrong credentials mas!");
+            // console.log(parseResult.error.message);
+            setInputError(parseResult.error.issues);
         }
     };
 
@@ -47,6 +59,26 @@ export function RegisterForm() {
             <Button label="Register" onClick={handleRegister} />
         </>
     );
+
+    const getErrorMessages = (fieldName: string) => {
+        const errors = inputError.filter((issue) =>
+            issue.path.includes(fieldName)
+        );
+        return (
+            errors.length > 0 && (
+                <div>
+                    {errors.map((error, index) => (
+                        <small
+                            key={index}
+                            style={{ display: "block", color: "red" }}
+                        >
+                            {error.message}
+                        </small>
+                    ))}
+                </div>
+            )
+        );
+    };
 
     return (
         <>
@@ -74,6 +106,7 @@ export function RegisterForm() {
                                 value={registerFormData.username}
                                 onChange={handleFormChange}
                             />
+                            {getErrorMessages("username")}
                         </div>
                         <div>
                             <label style={{ display: "block" }}>Name</label>
@@ -83,6 +116,7 @@ export function RegisterForm() {
                                 value={registerFormData.name}
                                 onChange={handleFormChange}
                             />
+                            {getErrorMessages("name")}
                         </div>
                         <div>
                             <label style={{ display: "block" }}>Email</label>
@@ -93,6 +127,7 @@ export function RegisterForm() {
                                 value={registerFormData.email}
                                 onChange={handleFormChange}
                             />
+                            {getErrorMessages("email")}
                         </div>
                         <div>
                             <label style={{ display: "block" }}>Password</label>
@@ -103,6 +138,20 @@ export function RegisterForm() {
                                 onChange={handleFormChange}
                                 feedback={false}
                             />
+                            {getErrorMessages("password")}
+                        </div>
+                        <div>
+                            <label style={{ display: "block" }}>
+                                Confirm Password
+                            </label>
+                            <Password
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={registerFormData.confirmPassword}
+                                onChange={handleFormChange}
+                                feedback={false}
+                            />
+                            {getErrorMessages("confirmPassword")}
                         </div>
                         <div>
                             Already have an account?{" "}
@@ -114,3 +163,8 @@ export function RegisterForm() {
         </>
     );
 }
+
+/**
+ *
+ *
+ */
