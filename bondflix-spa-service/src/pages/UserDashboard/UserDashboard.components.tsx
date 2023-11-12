@@ -174,7 +174,14 @@ function DashboardSidebar(props: {
             },
         },
         { label: "Upload", icon: <UploadIcon /> },
-        { label: "My Channel", icon: <MyChannelIcon /> },
+        {
+            label: "My Channel",
+            icon: <MyChannelIcon />,
+            command: () => {
+                navigate("/mychannel");
+                setSidebarVisible(false);
+            },
+        },
         { label: "Logout", icon: <LogoutIcon />, command: handleLogout },
     ];
 

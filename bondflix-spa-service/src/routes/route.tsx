@@ -12,6 +12,7 @@ import { Register } from "../pages/Register/Register.tsx";
 import { Watch } from "../pages/Watch/Watch.tsx";
 import { Subscription } from "../pages/Subscription/Subscription.tsx";
 import { Results } from "../pages/Results/Results.tsx";
+import { MyChannel } from "../pages/MyChannel/MyChannel.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -24,6 +25,7 @@ export const router = createBrowserRouter(
                 <Route path="/watch" element={<Watch />} />
                 <Route path="/subscriptions" element={<Subscription />} />
                 <Route path="/results" element={<Results />} />
+                <Route path="/mychannel" element={<MyChannel />} />
             </Route>
         </Route>
     )
