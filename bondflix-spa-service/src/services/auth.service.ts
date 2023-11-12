@@ -48,6 +48,7 @@ export async function logout(): Promise<ResponseData> {
 
 export async function register(data: RegisterFormData): Promise<ResponseData> {
     try {
+        console.log(data);
         const response = await axios.post("/auth/register", data, {
             withCredentials: true,
         });

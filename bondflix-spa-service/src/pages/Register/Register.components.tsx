@@ -38,18 +38,16 @@ export function RegisterForm() {
         setInputError([]);
         const parseResult = RegisterSchema.safeParse(registerFormData);
         if (parseResult.success) {
-            showSuccess("Betull");
-            // const response = await register(registerFormData);
-            // if (response.success) {
-            //     showSuccess("Registered successfully!");
-            //     setTimeout(() => {
-            //         navigate("/login");
-            //     }, 1000);
-            // } else {
-            //     showError("Wrong credentials mas!");
-            // }
+            const response = await register(registerFormData);
+            if (response.success) {
+                showSuccess("Registered successfully!");
+                setTimeout(() => {
+                    navigate("/login");
+                }, 1000);
+            } else {
+                showError(`Failed to register: ${response.message}`);
+            }
         } else {
-            // console.log(parseResult.error.message);
             setInputError(parseResult.error.issues);
         }
     };

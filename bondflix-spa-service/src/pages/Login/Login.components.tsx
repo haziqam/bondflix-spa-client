@@ -7,6 +7,8 @@ import { login } from "../../services/auth.service";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../../hooks/useToast";
 import { Toast } from "primereact/toast";
+import { ZodIssue } from "zod";
+import { LoginSchema } from "../../lib/zod/auth.schema";
 //TODO:
 /**
  * 1. Validasi field
@@ -20,17 +22,24 @@ export function LoginForm() {
         password: "",
     });
     const { toastRef, showError } = useToast();
+    const [inputError, setInputError] = useState<ZodIssue[]>([]);
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLoginFormData({ ...loginFormData, [e.target.name]: e.target.value });
     };
 
     const handleLogin = async () => {
-        const response = await login(loginFormData);
-        if (response.success) {
-            navigate("/dashboard");
+        setInputError([]);
+        const parseResult = LoginSchema.safeParse(loginFormData);
+        if (parseResult.success) {
+            const response = await login(loginFormData);
+            if (response.success) {
+                navigate("/dashboard");
+            } else {
+                showError(`Failed to login: ${response.message}`);
+            }
         } else {
-            showError("Wrong credentials mas!");
+            setInputError(parseResult.error.issues);
         }
     };
 
@@ -39,6 +48,26 @@ export function LoginForm() {
             <Button label="Login" onClick={handleLogin} />
         </>
     );
+
+    const getErrorMessages = (fieldName: string) => {
+        const errors = inputError.filter((issue) =>
+            issue.path.includes(fieldName)
+        );
+        return (
+            errors.length > 0 && (
+                <div>
+                    {errors.map((error, index) => (
+                        <small
+                            key={index}
+                            style={{ display: "block", color: "red" }}
+                        >
+                            {error.message}
+                        </small>
+                    ))}
+                </div>
+            )
+        );
+    };
 
     return (
         <>
@@ -68,6 +97,7 @@ export function LoginForm() {
                                 value={loginFormData.identifier}
                                 onChange={handleFormChange}
                             />
+                            {getErrorMessages("identifier")}
                         </div>
                         <div>
                             <label style={{ display: "block" }}>Password</label>
@@ -78,6 +108,7 @@ export function LoginForm() {
                                 onChange={handleFormChange}
                                 feedback={false}
                             />
+                            {getErrorMessages("password")}
                         </div>
                         <div>
                             Don't have an account yet?{" "}

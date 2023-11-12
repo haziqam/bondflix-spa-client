@@ -58,8 +58,25 @@ export const RegisterSchema = z
     });
 
 export const LoginSchema = z.object({
-    identifier: z.union([z.string(), z.string().email()], {
-        required_error: "Identifier (username or email) is required",
-    }),
-    password: z.string({ required_error: "Password is required" }),
+    identifier: z
+        .union([
+            z.string().min(8, {
+                message: "Identifier must contain at least 8 characters",
+            }),
+            z.string().email(),
+            z.string().length(0),
+        ])
+        .refine((e) => e !== "", {
+            message: "Identifier is required",
+        }),
+    password: z
+        .union([
+            z.string().min(8, {
+                message: "Password must contain at least 8 characters",
+            }),
+            z.string().length(0),
+        ])
+        .refine((e) => e !== "", {
+            message: "Password is required",
+        }),
 });
