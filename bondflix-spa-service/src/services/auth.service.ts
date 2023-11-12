@@ -1,12 +1,16 @@
-import axios from "../lib/axios/axios";
+import axiosInstance from "../lib/axios/axios";
+import axios from "axios";
 
 export async function login(data: LoginFormData): Promise<ResponseData> {
     try {
-        const response = await axios.post("/auth/login", data, {
+        const response = await axiosInstance.post("/auth/login", data, {
             withCredentials: true,
         });
         return response.data as ResponseData;
     } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return error.response?.data;
+        }
         return {
             success: false,
             message: (error as Error).message,
@@ -17,11 +21,14 @@ export async function login(data: LoginFormData): Promise<ResponseData> {
 
 export async function authorize(): Promise<ResponseData> {
     try {
-        const response = await axios.get("/auth/autologin", {
+        const response = await axiosInstance.get("/auth/autologin", {
             withCredentials: true,
         });
         return response.data as ResponseData;
     } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return error.response?.data;
+        }
         return {
             success: false,
             message: (error as Error).message,
@@ -32,12 +39,15 @@ export async function authorize(): Promise<ResponseData> {
 
 export async function logout(): Promise<ResponseData> {
     try {
-        const response = await axios.get("/auth/logout", {
+        const response = await axiosInstance.get("/auth/logout", {
             withCredentials: true,
         });
         console.log(response.data);
         return response.data as ResponseData;
     } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return error.response?.data;
+        }
         return {
             success: false,
             message: (error as Error).message,
@@ -49,11 +59,14 @@ export async function logout(): Promise<ResponseData> {
 export async function register(data: RegisterFormData): Promise<ResponseData> {
     try {
         console.log(data);
-        const response = await axios.post("/auth/register", data, {
+        const response = await axiosInstance.post("/auth/register", data, {
             withCredentials: true,
         });
         return response.data as ResponseData;
     } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return error.response?.data;
+        }
         return {
             success: false,
             message: (error as Error).message,
