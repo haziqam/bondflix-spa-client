@@ -85,39 +85,43 @@ function ChannelInfoBox(props: {
             style={{
                 display: "flex",
                 marginBottom: "16px",
+                justifyContent: "space-between",
             }}
         >
-            <img
-                src={channelProfilePic}
-                alt="Channel profile picture"
-                style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    marginRight: "20px",
-                }}
-            />
-            <div
-                style={{
-                    marginRight: "80px",
-                }}
-            >
+            <div style={{ display: "flex" }}>
+                <img
+                    src={channelProfilePic}
+                    alt="Channel profile picture"
+                    style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        marginRight: "20px",
+                    }}
+                />
                 <div
                     style={{
-                        fontWeight: "bold",
-                        fontSize: "1.2rem",
+                        marginRight: "80px",
                     }}
                 >
-                    {channelName}
-                </div>
-                <div
-                    style={{
-                        fontSize: "0.8rem",
-                    }}
-                >
-                    {channelSubscribers} Subscribers
+                    <div
+                        style={{
+                            fontWeight: "bold",
+                            fontSize: "1.2rem",
+                        }}
+                    >
+                        {channelName}
+                    </div>
+                    <div
+                        style={{
+                            fontSize: "0.8rem",
+                        }}
+                    >
+                        {channelSubscribers} Subscribers
+                    </div>
                 </div>
             </div>
+
             <div>
                 <Button>Subscribe</Button>
             </div>

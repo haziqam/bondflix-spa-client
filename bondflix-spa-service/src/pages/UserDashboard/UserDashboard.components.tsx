@@ -266,7 +266,7 @@ function SearchBar() {
         }
     };
     return (
-        <div className="p-inputgroup" style={{ width: "400px" }}>
+        <div className="p-inputgroup" style={{ width: "600px" }}>
             <InputText
                 value={searchQuery}
                 placeholder="Search"
