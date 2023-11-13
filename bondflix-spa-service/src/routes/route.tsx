@@ -13,6 +13,8 @@ import { Watch } from "../pages/Watch/Watch.tsx";
 import { Subscription } from "../pages/Subscription/Subscription.tsx";
 import { Results } from "../pages/Results/Results.tsx";
 import { MyChannel } from "../pages/MyChannel/MyChannel.tsx";
+import { Upload } from "../pages/Upload/Upload.tsx";
+import { Studio } from "../pages/Studio/Studio.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -26,6 +28,8 @@ export const router = createBrowserRouter(
                 <Route path="/subscriptions" element={<Subscription />} />
                 <Route path="/results" element={<Results />} />
                 <Route path="/mychannel" element={<MyChannel />} />
+                <Route path="/upload" element={<Upload />} />
+                <Route path="/studio" element={<Studio />} />
             </Route>
         </Route>
     )

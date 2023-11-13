@@ -21,6 +21,7 @@ import {
     HamburgerButtonIcon,
 } from "../../shared-components/Icons";
 import { BondflixLogo } from "../../shared-components/Logo";
+import { flushSync } from "react-dom";
 
 export function DashboardBaseComponent() {
     const { isAuthorized } = useAuthorize();
@@ -173,7 +174,14 @@ function DashboardSidebar(props: {
                 setSidebarVisible(false);
             },
         },
-        { label: "Upload", icon: <UploadIcon /> },
+        {
+            label: "Upload",
+            icon: <UploadIcon />,
+            command: () => {
+                navigate("/upload");
+                setSidebarVisible(false);
+            },
+        },
         {
             label: "My Channel",
             icon: <MyChannelIcon />,
