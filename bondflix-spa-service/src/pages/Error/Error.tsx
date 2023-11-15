@@ -1,13 +1,17 @@
 import React from 'react';
-import ErrorContent from './Error.components'; 
+import { ErrorContent } from './Error.components.tsx'; 
 import './Error.styles.css';
 
-export function Error() {
+const ErrorPage: React.FC = () => {
+  const returnToHome = () => {
+    
+  };
+
   return (
-    <div className="error-container">
-      <ErrorContent />
+    <div>
+      <ErrorContent onReturnHome={returnToHome} />
     </div>
   );
-}
+};
 
-export default Error;
+export default ErrorPage;
