@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { ContentUploadForm } from "./Studio.components";
@@ -9,34 +8,26 @@ export function Studio() {
         useState<ContentUploadData>({
             title: "",
             description: "",
-            visibility: "",
             genres: [],
             categories: [],
-            video: location.state.video,
-            thumbnail: location.state.thumbnail,
+            content_file: location.state.video,
+            thumbnail_file: location.state.thumbnail,
         });
 
-    useEffect(() => {
-        console.log(contentUploadData.video);
-        console.log(contentUploadData.thumbnail);
-    }, []);
     return (
-        <div>
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+            }}
+        >
+            <h2>Last step: Insert information for your video</h2>
             <ContentUploadForm
                 contentUploadData={contentUploadData}
                 setContentUploadData={setContentUploadData}
             />
         </div>
-    );
-}
-
-function uploadButtonDisabled(contentUploadData: ContentUploadData) {
-    return (
-        contentUploadData.title === "" ||
-        contentUploadData.description === "" ||
-        contentUploadData.genres.length === 0 ||
-        contentUploadData.categories.length === 0 ||
-        !contentUploadData.video ||
-        !contentUploadData.thumbnail
     );
 }
