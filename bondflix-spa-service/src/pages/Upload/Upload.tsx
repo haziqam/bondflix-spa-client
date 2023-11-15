@@ -1,17 +1,13 @@
 import { Button } from "primereact/button";
 import { ThumbnailUploader, VideoUploader } from "./Upload.components";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function Upload() {
     const navigate = useNavigate();
     const [video, setVideo] = useState<File | null>(null);
     const [thumbnail, setThumbnail] = useState<File | null>(null);
     const videoAndThumbnailUploaded = !!video && !!thumbnail;
-
-    useEffect(() => {
-        console.log(thumbnail);
-    }, [thumbnail]);
 
     const handleContinueButtonClick = () => {
         navigate("/studio", { state: { video, thumbnail } });

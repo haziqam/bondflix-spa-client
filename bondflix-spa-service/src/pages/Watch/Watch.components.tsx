@@ -3,8 +3,7 @@ import { Button } from "primereact/button";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { Divider } from "primereact/divider";
 
-export function VideoContainer(props: { videoSrc: string }) {
-    const { videoSrc } = props;
+export function VideoContainer(props: { contentId: number}) {
     return (
         <div
             style={{
@@ -14,7 +13,7 @@ export function VideoContainer(props: { videoSrc: string }) {
         >
             <video
                 controls
-                src={videoSrc}
+                src={`http://localhost:3000/static/contents?id=${props.contentId}`}
                 style={{
                     height: "360px",
                     width: "640px",
@@ -28,16 +27,16 @@ export function VideoContainer(props: { videoSrc: string }) {
 export function VideoInformationContainer(props: {
     title: string;
     channelName: string;
-    channelSubscribers: number;
+    channelUsername: string;
     uploadedAt: string;
-    genres: string[];
-    categories: string[];
+    genres: Genre[];
+    categories: Category[];
     description: string;
 }) {
     const {
         title,
         channelName,
-        channelSubscribers,
+        channelUsername,
         uploadedAt,
         genres,
         categories,
@@ -63,7 +62,7 @@ export function VideoInformationContainer(props: {
             </h2>
             <ChannelInfoBox
                 channelName={channelName}
-                channelSubscribers={channelSubscribers}
+                channelUsername={channelUsername}
             />
             <DescriptionBox
                 uploadedAt={uploadedAt}
@@ -77,9 +76,9 @@ export function VideoInformationContainer(props: {
 
 function ChannelInfoBox(props: {
     channelName: string;
-    channelSubscribers: number;
+    channelUsername: string;
 }) {
-    const { channelName, channelSubscribers } = props;
+    const { channelName, channelUsername } = props;
     return (
         <div
             style={{
@@ -117,7 +116,7 @@ function ChannelInfoBox(props: {
                             fontSize: "0.8rem",
                         }}
                     >
-                        {channelSubscribers} Subscribers
+                        {`@${channelUsername}`}
                     </div>
                 </div>
             </div>
@@ -131,8 +130,8 @@ function ChannelInfoBox(props: {
 
 function DescriptionBox(props: {
     uploadedAt: string;
-    genres: string[];
-    categories: string[];
+    genres: Genre[];
+    categories: Category[];
     description: string;
 }) {
     const { uploadedAt, genres, categories, description } = props;
@@ -160,7 +159,7 @@ function DescriptionBox(props: {
     );
 }
 
-function ContentInfoLabelWrapper(props: { infos: string[] }) {
+function ContentInfoLabelWrapper(props: { infos: Genre[] | Category[] }) {
     return (
         <div
             style={{
@@ -170,7 +169,7 @@ function ContentInfoLabelWrapper(props: { infos: string[] }) {
             }}
         >
             {props.infos.map((el) => (
-                <ContentInfoLabel info={el} />
+                <ContentInfoLabel info={el.name} />
             ))}
         </div>
     );

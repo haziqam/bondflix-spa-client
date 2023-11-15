@@ -1,25 +1,32 @@
 import { VideoContainer, VideoInformationContainer } from "./Watch.components";
 import videoSample from "../../temp-video/video2.mp4";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getContent } from "../../services/content.service";
 
 export function Watch() {
-    // const [URLSearchParams] = useSearchParams();
-    // const contentId = URLSearchParams.get("id");
-    // const {
-    //     videoSrc
-    //     title,
-    //     channelName,
-    //     channelSubscribers,
-    //     uploadedAt,
-    //     genres,
-    //     categories,
-    //     description,
-    // } = fetchContentData(contentId);
+    const navigate = useNavigate();
+    const [URLSearchParams] = useSearchParams();
+    const contentId = URLSearchParams.get("id");
+    const [content, setContent] = useState<Content | null>(null);
+    useEffect(() => {
+        if (!contentId) {
+            navigate("/dashboard");
+        } else {
+            getContent(parseInt(contentId)).then((content) => {
+                if (!content.data) {
+                    navigate("/dashboard");
+                }
+                setContent(content.data);
+            });
+        }
+    }, [contentId, navigate]);
 
     // STUB
     const title = "This is a title";
     const channelName = "Channel Name";
-    const channelSubscribers = 100;
+    // const channelSubscribers = 100;
+    const channelUsername = "heloworld";
 
     const uploadedAt = "11 November, 2023";
     const genres = [
@@ -48,15 +55,15 @@ export function Watch() {
             }}
         >
             <div>
-                <VideoContainer videoSrc={videoSample} />
+                <VideoContainer contentId={parseInt(contentId!)} />
                 <VideoInformationContainer
-                    title={title}
-                    channelName={channelName}
-                    channelSubscribers={channelSubscribers}
-                    uploadedAt={uploadedAt}
-                    genres={genres}
-                    categories={categories}
-                    description={description}
+                    title={content?.title!}
+                    channelName={content?.user.name!}
+                    channelUsername={content?.user.username!}
+                    uploadedAt={content?.uploaded_at!}
+                    genres={content?.genres!}
+                    categories={content?.categories!}
+                    description={content?.description!}
                 />
             </div>
         </div>
