@@ -1,6 +1,6 @@
 import "primeicons/primeicons.css";
 import "./UserDashboard.styles.css";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
 import { InputText } from "primereact/inputtext";
@@ -21,7 +21,7 @@ import {
     HamburgerButtonIcon,
 } from "../../shared-components/Icons";
 import { BondflixLogo } from "../../shared-components/Logo";
-import { flushSync } from "react-dom";
+import { getAllContents } from "../../services/content.service";
 
 export function DashboardBaseComponent() {
     const { isAuthorized } = useAuthorize();
@@ -46,6 +46,13 @@ export function DashboardBaseComponent() {
 }
 
 export function DashboardContent() {
+    const [contents, setContents] = useState<Content[]>([]);
+    useEffect(() => {
+        getAllContents().then((fetchedContent) => {
+            setContents(fetchedContent.data);
+        });
+    }, []);
+
     return (
         <div
             style={{
@@ -57,12 +64,15 @@ export function DashboardContent() {
                 padding: "10px 15px 15px 15px",
             }}
         >
-            <ContentCard
-                title="Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque error molestiae placeat accusantium tenetur sunt at aliquam fugit consequuntur. Exercitationem non beatae voluptatum est placeat distinctio, corporis ut quia quae."
-                channelName="Mr Beast"
-                thumbnailSrc={thumbnail1}
-                id={10}
-            />
+            {contents.map((content) => (
+                <ContentCard
+                    key={content.id}
+                    title={content.title}
+                    channelName={content.user.name}
+                    thumbnailSrc={`http://localhost:3000/static/thumbnails?id=${content.id}`}
+                    id={content.id}
+                />
+            ))}
         </div>
     );
 }
@@ -83,6 +93,8 @@ function ContentCard(props: {
                 objectFit: "cover",
                 borderTopLeftRadius: "6px",
                 borderTopRightRadius: "6px",
+                width: "300px",
+                height: "168px",
             }}
         />
     );
@@ -139,6 +151,7 @@ function ContentCard(props: {
                     },
                 },
             }}
+            style={{ width: "300px", height: "225px" }}
             className="ContentCard"
             onClick={handleClick}
         ></Card>
