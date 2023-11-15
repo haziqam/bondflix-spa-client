@@ -1,5 +1,4 @@
 import { VideoContainer, VideoInformationContainer } from "./Watch.components";
-import videoSample from "../../temp-video/video2.mp4";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getContent } from "../../services/content.service";
@@ -17,35 +16,15 @@ export function Watch() {
                 if (!content.data) {
                     navigate("/dashboard");
                 }
-                setContent(content.data);
+                if (content.status === 401) {
+                    console.log("tidak boleh akses");
+                    // TODO: tampilin dialog
+                } else {
+                    setContent(content.data as Content);
+                }
             });
         }
     }, [contentId, navigate]);
-
-    // STUB
-    const title = "This is a title";
-    const channelName = "Channel Name";
-    // const channelSubscribers = 100;
-    const channelUsername = "heloworld";
-
-    const uploadedAt = "11 November, 2023";
-    const genres = [
-        "Horror",
-        "Comedy",
-        "Sci-fi",
-        "Horror",
-        "Comedy",
-        "Sci-fi",
-        "Horror",
-        "Comedy",
-        "Sci-fi",
-        "Horror",
-        "Comedy",
-        "Sci-fi",
-    ];
-    const categories = ["Cartoon", "Reality Show", "Documentary"];
-    const description =
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima blanditiis vero quod odit tempore, repellat assumenda perspiciatis corrupti esse modi, expedita sapiente. Nulla reiciendis atque corporis necessitatibus error quaerat dolore?";
 
     return (
         <div

@@ -1,9 +1,8 @@
 type ContentUploadData = {
     title: string;
     description: string;
-    visibility: string;
-    genres: string[];
-    categories: string[];
-    video: File;
-    thumbnail: File;
+    genres: number[];
+    categories: number[];
+    content_file: File;
+    thumbnail_file: File;
 };

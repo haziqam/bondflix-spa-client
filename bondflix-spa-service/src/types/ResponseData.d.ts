@@ -1,5 +1,6 @@
 type ResponseData = {
     success: boolean;
     message: string;
-    data: any;
+    data: unknown;
+    status?: number | undefined;
 };
