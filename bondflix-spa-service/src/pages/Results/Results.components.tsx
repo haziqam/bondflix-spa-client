@@ -1,12 +1,29 @@
 import { Card } from "primereact/card";
 import { TabMenu } from "primereact/tabmenu";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import contentThumbnail from "../../assets/thumbnail1.jpg";
 import channelProfilePic from "../../temp-video/profile.png";
 import { Button } from "primereact/button";
+import { searchContent } from "../../services/content.service";
+import { searchChannel } from "../../services/user.service";
 
-export function ResultsContent() {
+export function ResultsContent(props: {query: string}) {
     const [tabActiveIndex, setTabActiveIndex] = useState(0);
+    const [foundContents, setFoundContents] = useState<Content[]>([])
+    const [foundChannels, setFoundChannels] = useState<User[]>([])
+    
+
+    useEffect(()=> {
+        searchContent(props.query).then((response) => {
+            // console.log(response.data)
+            setFoundContents(response.data as Content[])
+        })
+        searchChannel(props.query).then((response) => {
+            console.log(response.data)
+            setFoundChannels(response.data as User[])
+        })
+    }, [])
+
     return (
         <div style={{ marginBottom: "32px" }}>
             <ResultsMenuTab
@@ -15,9 +32,9 @@ export function ResultsContent() {
             />
             <div style={{ display: "flex", justifyContent: "center" }}>
                 {tabActiveIndex === 0 ? (
-                    <ContentSearchResults />
+                    <ContentSearchResults foundContents={foundContents} />
                 ) : (
-                    <ChannelSearchResults />
+                    <ChannelSearchResults foundChannels={foundChannels}/>
                 )}
             </div>
         </div>
@@ -43,7 +60,7 @@ function ResultsMenuTab(props: {
     );
 }
 
-function ContentSearchResults() {
+function ContentSearchResults(props: {foundContents: Content[]}) {
     return (
         <div
             style={{
@@ -53,16 +70,17 @@ function ContentSearchResults() {
                 flexDirection: "column",
                 gap: "16px",
             }}
-        >
-            <ContentResultsCard />
-            <ContentResultsCard />
-            <ContentResultsCard />
-            <ContentResultsCard />
+        > {
+            props.foundContents.length === 0 ? <h2>No content found</h2> : props.foundContents.map((content) => (
+                <ContentResultsCard content={content} key={content.id}/>
+            ))
+        }
         </div>
     );
 }
 
-function ContentResultsCard() {
+function ContentResultsCard(props: {content: Content}) {
+    const {content} = props
     return (
         <Card
             pt={{
@@ -76,7 +94,7 @@ function ContentResultsCard() {
         >
             <div style={{ display: "flex", gap: "20px" }}>
                 <img
-                    src={contentThumbnail}
+                    src={`http://localhost:3000/static/thumbnails?id=${content.id}`}
                     alt="Content Thumbnail"
                     style={{
                         objectFit: "cover",
@@ -86,8 +104,8 @@ function ContentResultsCard() {
                     }}
                 />
                 <section>
-                    <h2 style={{ margin: "0" }}>Content Title</h2>
-                    <div>11 November, 2023</div>
+                    <h2 style={{ margin: "0" }}>{content.title}</h2>
+                    <div>{content.uploaded_at}</div>
                     <div
                         style={{
                             display: "flex",
@@ -97,7 +115,7 @@ function ContentResultsCard() {
                         }}
                     >
                         <img
-                            src={channelProfilePic}
+                            src={`http://localhost:3000/static/pictures?id=${content.creator_id}`}
                             alt="Channel profile picture"
                             style={{
                                 width: "40px",
@@ -105,7 +123,8 @@ function ContentResultsCard() {
                                 borderRadius: "50%",
                             }}
                         />
-                        <div>Channel name</div>
+                        {/* <div>{content.user.name}</div> */}
+                        <div>channel name</div>
                     </div>
                     <p
                         style={{
@@ -116,15 +135,7 @@ function ContentResultsCard() {
                             overflow: "hidden",
                         }}
                     >
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Aspernatur deserunt tempora ipsam adipisci repellendus
-                        dolore, ipsum excepturi molestias est aperiam labore
-                        nemo quasi praesentium at illo facilis? Corporis,
-                        commodi vero? Lorem ipsum dolor sit amet consectetur,
-                        adipisicing elit. Reiciendis deserunt doloribus sapiente
-                        quasi. Iste fugit nulla nesciunt tempora ipsum magnam
-                        rem sequi? Adipisci dolorem nulla facere, maiores neque
-                        sapiente at.
+                        {content.description}
                     </p>
                 </section>
             </div>
@@ -132,7 +143,7 @@ function ContentResultsCard() {
     );
 }
 
-function ChannelSearchResults() {
+function ChannelSearchResults(props: {foundChannels: User[]}) {
     return (
         <div
             style={{
@@ -142,16 +153,17 @@ function ChannelSearchResults() {
                 flexDirection: "column",
                 gap: "16px",
             }}
-        >
-            <ChannelResultsCard />
-            <ChannelResultsCard />
-            <ChannelResultsCard />
-            <ChannelResultsCard />
+        >   {
+            props.foundChannels.length === 0 ? <h2>No Channels Found</h2> :
+            props.foundChannels.map((channel) => (
+                <ChannelResultsCard channel={channel} key={channel.id}/>
+            ))
+        }
         </div>
     );
 }
 
-function ChannelResultsCard() {
+function ChannelResultsCard(props: {channel: User}) {
     return (
         <Card
             pt={{
@@ -174,9 +186,8 @@ function ChannelResultsCard() {
                     }}
                 />
                 <section>
-                    <h2 style={{ margin: "0" }}>Channel Name</h2>
-                    <div style={{ color: "#a8a8a8" }}>@Username</div>
-                    <p>XXX Subscribers</p>
+                    <h2 style={{ margin: "0" }}>{props.channel.name}</h2>
+                    <div style={{ color: "#a8a8a8" }}>{`@${props.channel.username}`}</div>
                 </section>
                 <Button
                     style={{
