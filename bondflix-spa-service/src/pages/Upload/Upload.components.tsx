@@ -8,6 +8,7 @@ import {
 import { getFileExtension } from "../../lib/utils/fileHandling";
 import { useToast } from "../../hooks/useToast";
 
+//taro di d.ts
 const IMAGE_TYPES = [".jpeg", ".png", ".gif", ".jpg"];
 const VIDEO_TYPES = [".mpeg", ".mp4", ".quicktime", ".x-msvideo"];
 
@@ -42,7 +43,7 @@ export function VideoUploader(props: {
         <div className="card" style={{ width: "600px" }}>
             <Toast ref={toastRef} position="bottom-right" />
             <FileUpload
-                name="demo[]"
+                name="thumbnail"
                 accept={VIDEO_TYPES.join(",")}
                 headerTemplate={headerUploaderTemplate}
                 emptyTemplate={() => emptyUploaderTemplate("video")}
@@ -88,7 +89,7 @@ export function ThumbnailUploader(props: {
         <div className="card" style={{ width: "600px" }}>
             <Toast ref={toastRef} position="bottom-right" />
             <FileUpload
-                name="demo[]"
+                name="thumbnail"
                 accept={IMAGE_TYPES.join(",")}
                 headerTemplate={headerUploaderTemplate}
                 emptyTemplate={() => emptyUploaderTemplate("image")}

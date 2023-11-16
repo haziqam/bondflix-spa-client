@@ -16,28 +16,46 @@ import { getAllCategories } from "../../services/category.service";
 import { createContent } from "../../services/content.service";
 import { useToast } from "../../hooks/useToast";
 import { Toast } from "primereact/toast";
+import { getAllSponsors } from "../../services/sponsor.service";
+import { useNavigate } from "react-router";
 
 export function ContentUploadForm(props: {
     contentUploadData: ContentUploadData;
     setContentUploadData: Dispatch<SetStateAction<ContentUploadData>>;
 }) {
+    const navigate = useNavigate();
+    const [isUploading, setIsUploading] = useState(false);
     const { contentUploadData, setContentUploadData } = props;
+    const [visibility, setVisibility] = useState(false);
     const [genreOptions, setGenreOptions] = useState<Genre[]>([]);
     const [selectedGenre, setSelectedGenre] = useState<Genre[]>([]);
     const [categoryOptions, setCategoryOptions] = useState<Category[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category[]>([]);
+    const [sponsorOptions, setSponsorOptions] = useState<Sponsor[]>([]);
+    const [selectedSponsors, setSelectedSponsors] = useState<Sponsor[]>([]);
     const { toastRef, showSuccess, showError } = useToast();
 
+    const hanldeVisibilityChange = (e: CheckboxChangeEvent) => {
+        setVisibility(e.checked!);
+    };
+
     useEffect(() => {
-        const fetchGenreCategoryOptions = async () => {
+        const fetchOptions = async () => {
             const genreResponse = await getAllGenres();
             const categoryResponse = await getAllCategories();
-            if (genreResponse.success && categoryResponse.success) {
+            const sponsorResponse = await getAllSponsors();
+            if (
+                genreResponse.success &&
+                categoryResponse.success &&
+                sponsorResponse.success
+            ) {
                 setGenreOptions(genreResponse.data as Genre[]);
                 setCategoryOptions(categoryResponse.data as Category[]);
+                // console.log(sponsorResponse)
+                setSponsorOptions(sponsorResponse.data as Sponsor[]);
             }
         };
-        fetchGenreCategoryOptions();
+        fetchOptions();
     }, []);
 
     const handleFormChange = (
@@ -82,9 +100,27 @@ export function ContentUploadForm(props: {
         });
     }, [selectedCategory]);
 
+    const handleSelectedSponsorChange = (e: CheckboxChangeEvent) => {
+        if (e.checked) {
+            setSelectedSponsors([...selectedSponsors, e.value]);
+        } else {
+            setSelectedSponsors((prev) =>
+                prev.filter((el) => el.id !== e.value.id)
+            );
+        }
+    };
+
+    useEffect(() => {
+        setContentUploadData({
+            ...contentUploadData,
+            ["sponsors"]: selectedSponsors.map((el) => el.id),
+        });
+    }, [selectedSponsors]);
+
     const handleUpload = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(contentUploadData);
+        setIsUploading(true);
+        // console.log(contentUploadData);
         const uploadFormData = new FormData();
         uploadFormData.append("title", contentUploadData.title);
         uploadFormData.append("description", contentUploadData.description);
@@ -96,16 +132,23 @@ export function ContentUploadForm(props: {
             "categories",
             JSON.stringify(contentUploadData.categories)
         );
+        uploadFormData.append(
+            "sponsors",
+            JSON.stringify(contentUploadData.sponsors)
+        );
         uploadFormData.append("content_file", contentUploadData.content_file);
         uploadFormData.append(
             "thumbnail_file",
             contentUploadData.thumbnail_file
         );
-        //TODO: apus
-        uploadFormData.append("release_date", new Date().toISOString());
+        uploadFormData.append("visibility", `${visibility}`);
         const response = await createContent(uploadFormData);
+        setIsUploading(false);
         if (response.success) {
             showSuccess("Content successfully uploaded");
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 500);
         } else {
             showError("Failed to upload content");
         }
@@ -153,6 +196,19 @@ export function ContentUploadForm(props: {
                             }}
                             rows={5}
                         />
+                    </div>
+                    <div>
+                        <label>Visibility</label>
+                        <div style={{ marginTop: "8px" }}>
+                            <Checkbox
+                                inputId="visibility"
+                                name="visibility"
+                                checked={visibility}
+                                onChange={hanldeVisibilityChange}
+                                style={{ marginRight: "8px" }}
+                            />
+                            <span>Public?</span>
+                        </div>
                     </div>
                     <div>
                         <label style={{ display: "block" }}>Genre</label>
@@ -253,8 +309,61 @@ export function ContentUploadForm(props: {
                         </Card>
                     </div>
                     <div>
+                        <label style={{ display: "block" }}>Sponsor</label>
+                        <Card
+                            pt={{
+                                content: {
+                                    style: {
+                                        padding: "0",
+                                    },
+                                },
+                            }}
+                            style={{
+                                width: "90%",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: "16px",
+                                }}
+                            >
+                                {sponsorOptions.map((el) => (
+                                    <div
+                                        key={el.id}
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                        }}
+                                    >
+                                        <Checkbox
+                                            inputId={el.id.toString()}
+                                            name={el.name}
+                                            value={el}
+                                            onChange={
+                                                handleSelectedSponsorChange
+                                            }
+                                            checked={
+                                                selectedSponsors.find(
+                                                    (sponsor) =>
+                                                        sponsor.id === el.id
+                                                ) != undefined
+                                            }
+                                        />
+                                        <label>{el.name}</label>
+                                    </div>
+                                ))}
+                            </div>
+                        </Card>
+                    </div>
+                    <div>
                         <Button
-                            disabled={uploadButtonDisabled(contentUploadData)}
+                            disabled={
+                                uploadButtonDisabled(contentUploadData) ||
+                                isUploading
+                            }
                             type="submit"
                         >
                             Upload
@@ -265,6 +374,8 @@ export function ContentUploadForm(props: {
         </Card>
     );
 }
+
+// udah mulai ga bisa mempertahankan clean code nih wkwk
 
 function uploadButtonDisabled(contentUploadData: ContentUploadData) {
     return (

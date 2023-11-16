@@ -94,11 +94,6 @@ export function MyContentsTable() {
                 setMyContents(response.data as Content[]);
             });
     }, []);
-
-    useEffect(() => {
-        console.log(myContents);
-    }, [myContents]);
-
     const removeContent = (id: number) => {
         const deletedContentTitle = myContents.find(
             (el) => el.id === id
@@ -225,6 +220,7 @@ function ActionsTemplate(props: {
 }) {
     const { content, onDeleteContent } = props;
     const navigate = useNavigate();
+    const [editDialogVisible, setEditDialogVisible] = useState(false);
     const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
 
     const handlePreview = () => {
@@ -232,7 +228,9 @@ function ActionsTemplate(props: {
         navigate(encodeURI(contentUrl));
     };
 
-    const handleEdit = () => {};
+    const handleEdit = () => {
+        setEditDialogVisible(true);
+    };
     const handleDelete = () => {
         setDeleteDialogVisible(true);
     };
@@ -267,6 +265,31 @@ function ActionsTemplate(props: {
                 onClick={handleDelete}
             />
         </div>
+    );
+}
+
+function EditContentDialog(props: {
+    dialogVisible: boolean;
+    setDialogVisible: Dispatch<SetStateAction<boolean>>;
+    content: Content;
+    onEditContent: () => void;
+}) {
+    const { dialogVisible, setDialogVisible, content, onEditContent } = props;
+
+    const dialogFooter = () => {
+        return <div></div>;
+    };
+    return (
+        <>
+            <Dialog
+                visible={dialogVisible}
+                header={"Edit Content"}
+                onHide={() => setDialogVisible(false)}
+                footer={dialogFooter}
+            >
+                Something
+            </Dialog>
+        </>
     );
 }
 
