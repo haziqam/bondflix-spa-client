@@ -5,12 +5,11 @@ import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
 import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logout } from "../../services/auth.service";
 import { useAuthorize } from "../../hooks/useAuthorize";
 import { useToast } from "../../hooks/useToast";
 import { Card } from "primereact/card";
-import thumbnail1 from "../../assets/thumbnail1.jpg";
 import { Menu } from "primereact/menu";
 import { MenuItem } from "primereact/menuitem";
 import {
@@ -22,9 +21,11 @@ import {
 } from "../../shared-components/Icons";
 import { BondflixLogo } from "../../shared-components/Logo";
 import { getAllContents } from "../../services/content.service";
+import Cookies from "js-cookie";
 
 export function DashboardBaseComponent() {
     const { isAuthorized } = useAuthorize();
+    const [userId, setUserId] = useState<number>();
     const navigate = useNavigate();
 
     if (isAuthorized === false) {
@@ -32,10 +33,31 @@ export function DashboardBaseComponent() {
     }
 
     const [sidebarVisible, setSidebarVisible] = useState(false);
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+          if (!Cookies.get("userId")) {
+            logout().then(() => {
+              navigate("/login");
+            });
+          }
+        }, 2000);
+    
+        return () => {
+          clearInterval(intervalId);
+        };
+      }, []);
+    
+
+    useEffect(() => {
+        const userIdFromCookie = Cookies.get("userId");
+        if (!!userIdFromCookie) {
+            setUserId(parseInt(userIdFromCookie, 10));
+        }
+    }, []);
 
     return (
         <>
-            <Masthead setSidebarVisible={setSidebarVisible} />
+            <Masthead setSidebarVisible={setSidebarVisible} userId={userId!} />
             <DashboardSidebar
                 sidebarVisible={sidebarVisible}
                 setSidebarVisible={setSidebarVisible}
@@ -235,8 +257,9 @@ function DashboardSidebar(props: {
 
 function Masthead(props: {
     setSidebarVisible: Dispatch<SetStateAction<boolean>>;
+    userId: number;
 }) {
-    const { setSidebarVisible } = props;
+    const { setSidebarVisible, userId } = props;
     return (
         <div
             style={{
@@ -279,6 +302,17 @@ function Masthead(props: {
                 <BondflixLogo />
             </div>
             <SearchBar />
+            <Link to={"/myaccount"}>
+                <img
+                    src={`http://localhost:3000/static/pictures?id=${userId}`}
+                    alt="User profile picture"
+                    style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                    }}
+                />
+            </Link>
         </div>
     );
 }
