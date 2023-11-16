@@ -1,12 +1,17 @@
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import contentThumbnail from "../../assets/thumbnail1.jpg";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
 import { Toast } from "primereact/toast";
 import { useToast } from "../../hooks/useToast";
+import {
+    deleteContent,
+    getContentsByCreatorId,
+} from "../../services/content.service";
+import Cookies from "js-cookie";
 
 type Content = {
     id: number;
@@ -14,71 +19,86 @@ type Content = {
     description: string;
     thumbnailSrc: string;
     uploadedAt: string;
-    genres: string[];
-    categories: string[];
-    sponsors: string[];
+    genres: Genre[];
+    categories: Category[];
+    // sponsors: string[];
     visibility: "public" | "private";
 };
 
+// [
+//     {
+//         id: 1,
+//         title: "Sample Title 1",
+//         description: "Sample Description 1",
+//         thumbnailSrc: contentThumbnail,
+//         uploadedAt: "2023-10-27T12:00:00Z",
+//         genres: ["Action", "Drama", "Humor"],
+//         categories: ["Movies", "Cartoons", "Documentaries"],
+//         sponsors: ["Sponsor A", "Sponsor B"],
+//         visibility: "private",
+//     },
+//     {
+//         id: 2,
+//         title: "Sample Title 2",
+//         description: "Sample Description 2",
+//         thumbnailSrc: contentThumbnail,
+//         uploadedAt: "2023-10-27T13:30:00Z",
+//         genres: ["Comedy", "Romance"],
+//         categories: ["TV Shows"],
+//         sponsors: ["Sponsor C"],
+//         visibility: "public",
+//     },
+//     {
+//         id: 3,
+//         title: "Sample Title 1",
+//         description: "Sample Description 1",
+//         thumbnailSrc: contentThumbnail,
+//         uploadedAt: "2023-10-27T12:00:00Z",
+//         genres: ["Action", "Drama", "Humor"],
+//         categories: ["Movies", "Cartoons", "Documentaries"],
+//         sponsors: ["Sponsor A", "Sponsor B"],
+//         visibility: "private",
+//     },
+//     {
+//         id: 4,
+//         title: "Sample Title 2",
+//         description: "Sample Description 2",
+//         thumbnailSrc: contentThumbnail,
+//         uploadedAt: "2023-10-27T13:30:00Z",
+//         genres: ["Comedy", "Romance"],
+//         categories: ["TV Shows"],
+//         sponsors: ["Sponsor C"],
+//         visibility: "public",
+//     },
+//     {
+//         id: 5,
+//         title: "Sample Title 1",
+//         description: "Sample Description 1",
+//         thumbnailSrc: contentThumbnail,
+//         uploadedAt: "2023-10-27T12:00:00Z",
+//         genres: ["Action", "Drama", "Humor"],
+//         categories: ["Movies", "Cartoons", "Documentaries"],
+//         sponsors: ["Sponsor A", "Sponsor B"],
+//         visibility: "private",
+//     },
+// ]
+
 export function MyContentsTable() {
-    const [myContents, setMyContents] = useState<Content[]>([
-        {
-            id: 1,
-            title: "Sample Title 1",
-            description: "Sample Description 1",
-            thumbnailSrc: contentThumbnail,
-            uploadedAt: "2023-10-27T12:00:00Z",
-            genres: ["Action", "Drama", "Humor"],
-            categories: ["Movies", "Cartoons", "Documentaries"],
-            sponsors: ["Sponsor A", "Sponsor B"],
-            visibility: "private",
-        },
-        {
-            id: 2,
-            title: "Sample Title 2",
-            description: "Sample Description 2",
-            thumbnailSrc: contentThumbnail,
-            uploadedAt: "2023-10-27T13:30:00Z",
-            genres: ["Comedy", "Romance"],
-            categories: ["TV Shows"],
-            sponsors: ["Sponsor C"],
-            visibility: "public",
-        },
-        {
-            id: 3,
-            title: "Sample Title 1",
-            description: "Sample Description 1",
-            thumbnailSrc: contentThumbnail,
-            uploadedAt: "2023-10-27T12:00:00Z",
-            genres: ["Action", "Drama", "Humor"],
-            categories: ["Movies", "Cartoons", "Documentaries"],
-            sponsors: ["Sponsor A", "Sponsor B"],
-            visibility: "private",
-        },
-        {
-            id: 4,
-            title: "Sample Title 2",
-            description: "Sample Description 2",
-            thumbnailSrc: contentThumbnail,
-            uploadedAt: "2023-10-27T13:30:00Z",
-            genres: ["Comedy", "Romance"],
-            categories: ["TV Shows"],
-            sponsors: ["Sponsor C"],
-            visibility: "public",
-        },
-        {
-            id: 5,
-            title: "Sample Title 1",
-            description: "Sample Description 1",
-            thumbnailSrc: contentThumbnail,
-            uploadedAt: "2023-10-27T12:00:00Z",
-            genres: ["Action", "Drama", "Humor"],
-            categories: ["Movies", "Cartoons", "Documentaries"],
-            sponsors: ["Sponsor A", "Sponsor B"],
-            visibility: "private",
-        },
-    ]);
+    const [myContents, setMyContents] = useState<Content[]>([]);
     const { toastRef, showSuccess } = useToast();
+
+    useEffect(() => {
+        const userId = Cookies.get("userId");
+        if (userId != undefined)
+            getContentsByCreatorId(parseInt(userId, 10)).then((response) => {
+                setMyContents(response.data as Content[]);
+            });
+    }, []);
+
+    useEffect(() => {
+        console.log(myContents);
+    }, [myContents]);
+
     const removeContent = (id: number) => {
         const deletedContentTitle = myContents.find(
             (el) => el.id === id
@@ -102,49 +122,49 @@ export function MyContentsTable() {
                 <Column
                     header="ID"
                     field="id"
-                    style={{ minWidth: "70px" }}
+                    // style={{ minWidth: "70px" }}
                     frozen
                 />
                 <Column
                     header="Content Thumbnail"
                     body={ContentThumbnailTemplate}
-                    style={{ minWidth: "170px" }}
+                    // style={{ minWidth: "170px" }}
                     frozen
                 />
                 <Column
                     header="Title"
                     field="title"
-                    style={{ minWidth: "150px" }}
+                    // style={{ minWidth: "150px" }}
                     frozen
                 />
                 <Column
                     header="Description"
                     field="description"
-                    style={{ minWidth: "200px" }}
+                    // style={{ minWidth: "200px" }}
                 />
                 <Column
                     header="Date Uploaded"
                     field="uploadedAt"
-                    style={{ minWidth: "100px" }}
+                    // style={{ minWidth: "100px" }}
                 />
                 <Column
                     header="Visibility"
                     field="visibility"
-                    style={{ minWidth: "70px" }}
+                    // style={{ minWidth: "70px" }}
                 />
                 <Column
                     header="Genres"
                     body={(content) =>
                         GenresAndCategoriesTemplate(content, "genres")
                     }
-                    style={{ minWidth: "200px" }}
+                    // style={{ minWidth: "200px" }}
                 />
                 <Column
                     header="Categories"
                     body={(content) =>
                         GenresAndCategoriesTemplate(content, "categories")
                     }
-                    style={{ minWidth: "200px" }}
+                    // style={{ minWidth: "200px" }}
                 />
                 <Column
                     header="Actions"
@@ -154,7 +174,7 @@ export function MyContentsTable() {
                             onDeleteContent={removeContent}
                         />
                     )}
-                    style={{ minWidth: "200px" }}
+                    // style={{ minWidth: "200px" }}
                 />
             </DataTable>
         </>
@@ -164,7 +184,7 @@ export function MyContentsTable() {
 function ContentThumbnailTemplate(content: Content) {
     return (
         <img
-            src={content.thumbnailSrc}
+            src={`http://localhost:3000/static/thumbnails?id=${content.id}`}
             alt="Content Thumbnail"
             style={{
                 width: "150px",
@@ -180,9 +200,10 @@ function GenresAndCategoriesTemplate(
     content: Content,
     option: "genres" | "categories"
 ) {
+    const data = option === "genres" ? content.genres : content.categories;
     return (
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-            {content[option].map((val, i) => (
+            {data.map((val, i) => (
                 <span
                     key={i}
                     style={{
@@ -191,7 +212,7 @@ function GenresAndCategoriesTemplate(
                         borderRadius: "3px",
                     }}
                 >
-                    {val}
+                    {val.name}
                 </span>
             ))}
         </div>
@@ -257,12 +278,17 @@ function DeleteContentConfirmDialog(props: {
 }) {
     const { dialogVisible, setDialogVisible, content, onDeleteContent } = props;
     const { id, title } = content;
+    const { toastRef, showError } = useToast();
 
     const handleDeleteContent = () => {
-        // delete content API call
-        // if succeeded:
-        setDialogVisible(false);
-        onDeleteContent(id);
+        deleteContent(content.id).then((response) => {
+            if (response.success) {
+                setDialogVisible(false);
+                onDeleteContent(id);
+            } else {
+                showError("Failed to delete content");
+            }
+        });
     };
 
     const dialogFooter = () => {
@@ -286,6 +312,7 @@ function DeleteContentConfirmDialog(props: {
 
     return (
         <>
+            <Toast ref={toastRef} position="bottom-right" />
             <Dialog
                 visible={dialogVisible}
                 header={"Delete Content"}

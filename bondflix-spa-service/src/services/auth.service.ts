@@ -1,11 +1,15 @@
 import axiosInstance from "../lib/axios/axios";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 export async function login(data: LoginFormData): Promise<ResponseData> {
     try {
         const response = await axiosInstance.post("/auth/login", data, {
             withCredentials: true,
         });
+        if (response.data.success) {
+            Cookies.set("userId", response.data.data.userId);
+        }
         return response.data as ResponseData;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -42,7 +46,9 @@ export async function logout(): Promise<ResponseData> {
         const response = await axiosInstance.get("/auth/logout", {
             withCredentials: true,
         });
-        console.log(response.data);
+        if (response.data.success) {
+            Cookies.remove("userId");
+        }
         return response.data as ResponseData;
     } catch (error) {
         if (axios.isAxiosError(error)) {

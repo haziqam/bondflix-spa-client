@@ -49,7 +49,7 @@ export function DashboardContent() {
     const [contents, setContents] = useState<Content[]>([]);
     useEffect(() => {
         getAllContents().then((fetchedContent) => {
-            setContents(fetchedContent.data);
+            setContents(fetchedContent.data as Content[]);
         });
     }, []);
 
@@ -60,7 +60,7 @@ export function DashboardContent() {
                 height: "100%",
                 display: "grid",
                 gridTemplateColumns: "repeat(4, 1fr)",
-                gap: "20px 20px",
+                gap: "10px 10px",
                 padding: "10px 15px 15px 15px",
             }}
         >
@@ -93,7 +93,7 @@ function ContentCard(props: {
                 objectFit: "cover",
                 borderTopLeftRadius: "6px",
                 borderTopRightRadius: "6px",
-                width: "300px",
+                width: "100%",
                 height: "168px",
             }}
         />

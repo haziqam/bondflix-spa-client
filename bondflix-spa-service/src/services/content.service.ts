@@ -55,3 +55,56 @@ export async function createContent(
         }
     }
 }
+
+export async function getContentsByCreatorId(
+    creatorId: number
+): Promise<ResponseData> {
+    try {
+        const response = await axiosInstance.get(
+            `contents/creator/${creatorId}`,
+            {
+                withCredentials: true,
+            }
+        );
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return {
+                success: false,
+                message: error.message,
+                data: error.response?.data,
+                status: error.response?.status,
+            };
+        } else {
+            return {
+                success: false,
+                message: (error as Error).message,
+                data: null,
+            };
+        }
+    }
+}
+
+export async function deleteContent(contentId: number): Promise<ResponseData> {
+    try {
+        const response = await axiosInstance.delete(`contents/${contentId}`, {
+            withCredentials: true,
+        });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return {
+                success: false,
+                message: error.message,
+                data: error.response?.data,
+                status: error.response?.status,
+            };
+        } else {
+            return {
+                success: false,
+                message: (error as Error).message,
+                data: null,
+            };
+        }
+    }
+}
