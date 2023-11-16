@@ -20,6 +20,7 @@ export function Watch() {
                     console.log("tidak boleh akses");
                     // TODO: tampilin dialog
                 } else {
+                    console.log(content.data);
                     setContent(content.data as Content);
                 }
             });
@@ -42,6 +43,7 @@ export function Watch() {
                     uploadedAt={content?.uploaded_at!}
                     genres={content?.genres!}
                     categories={content?.categories!}
+                    sponsors={content?.sponsors!}
                     description={content?.description!}
                 />
             </div>

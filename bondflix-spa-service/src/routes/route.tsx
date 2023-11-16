@@ -16,8 +16,7 @@ import { MyChannel } from "../pages/MyChannel/MyChannel.tsx";
 import { Upload } from "../pages/Upload/Upload.tsx";
 import { Studio } from "../pages/Studio/Studio.tsx";
 import { AdminDashboard } from "../pages/AdminDashboard/AdminDashboard.tsx";
-
-
+import { MyAccount } from "../pages/MyAccount/MyAccount.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -34,6 +33,7 @@ export const router = createBrowserRouter(
                 <Route path="/mychannel" element={<MyChannel />} />
                 <Route path="/upload" element={<Upload />} />
                 <Route path="/studio" element={<Studio />} />
+                <Route path="/myaccount" element={<MyAccount />} />
             </Route>
         </Route>
     )

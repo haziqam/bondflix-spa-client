@@ -3,7 +3,7 @@ import { Button } from "primereact/button";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { Divider } from "primereact/divider";
 
-export function VideoContainer(props: { contentId: number}) {
+export function VideoContainer(props: { contentId: number }) {
     return (
         <div
             style={{
@@ -31,6 +31,7 @@ export function VideoInformationContainer(props: {
     uploadedAt: string;
     genres: Genre[];
     categories: Category[];
+    sponsors: Sponsor[];
     description: string;
 }) {
     const {
@@ -40,6 +41,7 @@ export function VideoInformationContainer(props: {
         uploadedAt,
         genres,
         categories,
+        sponsors,
         description,
     } = props;
 
@@ -68,6 +70,7 @@ export function VideoInformationContainer(props: {
                 uploadedAt={uploadedAt}
                 genres={genres}
                 categories={categories}
+                sponsors={sponsors}
                 description={description}
             />
         </div>
@@ -132,13 +135,16 @@ function DescriptionBox(props: {
     uploadedAt: string;
     genres: Genre[];
     categories: Category[];
+    sponsors: Sponsor[];
     description: string;
 }) {
-    const { uploadedAt, genres, categories, description } = props;
+    const { uploadedAt, genres, categories, description, sponsors } = props;
     const sectionHeaderStyle = { fontSize: "1rem", fontWeight: "bold" };
     return (
         <Accordion style={{ marginBottom: "30px" }}>
             <AccordionTab header="Description">
+                <section>{description}</section>
+                <Divider />
                 <section>
                     <h3 style={sectionHeaderStyle}>Uplaoded at {uploadedAt}</h3>
                 </section>
@@ -153,13 +159,18 @@ function DescriptionBox(props: {
                     <ContentInfoLabelWrapper infos={categories} />
                 </section>
                 <Divider />
-                <section>{description}</section>
+                <section>
+                    <h3 style={sectionHeaderStyle}>Sponsor</h3>
+                    <ContentInfoLabelWrapper infos={sponsors} />
+                </section>
             </AccordionTab>
         </Accordion>
     );
 }
 
-function ContentInfoLabelWrapper(props: { infos: Genre[] | Category[] }) {
+function ContentInfoLabelWrapper(props: {
+    infos: Genre[] | Category[] | Sponsor[];
+}) {
     return (
         <div
             style={{
@@ -169,7 +180,7 @@ function ContentInfoLabelWrapper(props: { infos: Genre[] | Category[] }) {
             }}
         >
             {props.infos.map((el) => (
-                <ContentInfoLabel info={el.name} />
+                <ContentInfoLabel info={el.name} key={el.id} />
             ))}
         </div>
     );

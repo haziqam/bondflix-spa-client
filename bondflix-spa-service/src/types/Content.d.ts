@@ -17,4 +17,5 @@ type Content = {
     };
     genres: Genre[];
     categories: Categories[];
+    sponsors: Sponsor[];
 };
