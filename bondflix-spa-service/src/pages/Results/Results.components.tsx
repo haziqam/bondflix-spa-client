@@ -6,23 +6,26 @@ import channelProfilePic from "../../temp-video/profile.png";
 import { Button } from "primereact/button";
 import { searchContent } from "../../services/content.service";
 import { searchChannel } from "../../services/user.service";
+import { Link, useNavigate } from "react-router-dom";
 
-export function ResultsContent(props: {query: string}) {
+export function ResultsContent(props: { query: string }) {
     const [tabActiveIndex, setTabActiveIndex] = useState(0);
-    const [foundContents, setFoundContents] = useState<Content[]>([])
-    const [foundChannels, setFoundChannels] = useState<User[]>([])
-    
+    const [foundContents, setFoundContents] = useState<Content[]>([]);
+    const [foundChannels, setFoundChannels] = useState<User[]>([]);
 
-    useEffect(()=> {
+    useEffect(() => {
         searchContent(props.query).then((response) => {
-            // console.log(response.data)
-            setFoundContents(response.data as Content[])
-        })
+            setFoundContents(response.data as Content[]);
+        });
         searchChannel(props.query).then((response) => {
-            console.log(response.data)
-            setFoundChannels(response.data as User[])
-        })
-    }, [])
+            console.log(response.data);
+            if (response.success) {
+                setFoundChannels(response.data as User[]);
+            } else {
+                setFoundChannels([]);
+            }
+        });
+    }, [props.query]);
 
     return (
         <div style={{ marginBottom: "32px" }}>
@@ -34,7 +37,7 @@ export function ResultsContent(props: {query: string}) {
                 {tabActiveIndex === 0 ? (
                     <ContentSearchResults foundContents={foundContents} />
                 ) : (
-                    <ChannelSearchResults foundChannels={foundChannels}/>
+                    <ChannelSearchResults foundChannels={foundChannels} />
                 )}
             </div>
         </div>
@@ -60,7 +63,7 @@ function ResultsMenuTab(props: {
     );
 }
 
-function ContentSearchResults(props: {foundContents: Content[]}) {
+function ContentSearchResults(props: { foundContents: Content[] }) {
     return (
         <div
             style={{
@@ -70,17 +73,25 @@ function ContentSearchResults(props: {foundContents: Content[]}) {
                 flexDirection: "column",
                 gap: "16px",
             }}
-        > {
-            props.foundContents.length === 0 ? <h2>No content found</h2> : props.foundContents.map((content) => (
-                <ContentResultsCard content={content} key={content.id}/>
-            ))
-        }
+        >
+            {" "}
+            {props.foundContents.length === 0 ? (
+                <h2>No content found</h2>
+            ) : (
+                props.foundContents.map((content) => (
+                    <ContentResultsCard content={content} key={content.id} />
+                ))
+            )}
         </div>
     );
 }
 
-function ContentResultsCard(props: {content: Content}) {
-    const {content} = props
+function ContentResultsCard(props: { content: Content }) {
+    const { content } = props;
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate(`/watch?id=${content.id}`);
+    };
     return (
         <Card
             pt={{
@@ -90,7 +101,12 @@ function ContentResultsCard(props: {content: Content}) {
                     },
                 },
             }}
-            style={{ backgroundColor: "#ececec", height: "250px" }}
+            style={{
+                backgroundColor: "#ececec",
+                height: "250px",
+                cursor: "pointer",
+            }}
+            onClick={handleClick}
         >
             <div style={{ display: "flex", gap: "20px" }}>
                 <img
@@ -143,7 +159,7 @@ function ContentResultsCard(props: {content: Content}) {
     );
 }
 
-function ChannelSearchResults(props: {foundChannels: User[]}) {
+function ChannelSearchResults(props: { foundChannels: User[] }) {
     return (
         <div
             style={{
@@ -153,17 +169,20 @@ function ChannelSearchResults(props: {foundChannels: User[]}) {
                 flexDirection: "column",
                 gap: "16px",
             }}
-        >   {
-            props.foundChannels.length === 0 ? <h2>No Channels Found</h2> :
-            props.foundChannels.map((channel) => (
-                <ChannelResultsCard channel={channel} key={channel.id}/>
-            ))
-        }
+        >
+            {" "}
+            {props.foundChannels.length === 0 ? (
+                <h2>No Channels Found</h2>
+            ) : (
+                props.foundChannels.map((channel) => (
+                    <ChannelResultsCard channel={channel} key={channel.id} />
+                ))
+            )}
         </div>
     );
 }
 
-function ChannelResultsCard(props: {channel: User}) {
+function ChannelResultsCard(props: { channel: User }) {
     return (
         <Card
             pt={{
@@ -187,7 +206,9 @@ function ChannelResultsCard(props: {channel: User}) {
                 />
                 <section>
                     <h2 style={{ margin: "0" }}>{props.channel.name}</h2>
-                    <div style={{ color: "#a8a8a8" }}>{`@${props.channel.username}`}</div>
+                    <div
+                        style={{ color: "#a8a8a8" }}
+                    >{`@${props.channel.username}`}</div>
                 </section>
                 <Button
                     style={{

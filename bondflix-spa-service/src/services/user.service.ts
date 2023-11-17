@@ -27,7 +27,7 @@ export async function getUser(userId: number): Promise<ResponseData> {
 
 export async function searchChannel(query: string): Promise<ResponseData> {
     try {
-        const uri = encodeURI(`/users/search?${query}`)
+        const uri = encodeURI(`/users/search?name=${query}`)
         const response = await axiosInstance.get(uri, {
             withCredentials: true,
         });
