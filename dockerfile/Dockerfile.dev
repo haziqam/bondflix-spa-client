@@ -6,7 +6,7 @@ COPY ./bondflix-spa-service/package.json .
 
 COPY ./bondflix-spa-service/yarn.lock .
 
-RUN yarn install
+RUN yarn
 
 COPY ./bondflix-spa-service .
 
