@@ -1,7 +1,7 @@
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 import contentThumbnail from "../../assets/thumbnail1.jpg";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
@@ -12,76 +12,21 @@ import {
     getContentsByCreatorId,
 } from "../../services/content.service";
 import Cookies from "js-cookie";
+import { InputText } from "primereact/inputtext";
+import { Checkbox } from "primereact/checkbox";
+import { InputTextarea } from "primereact/inputtextarea";
 
-type Content = {
-    id: number;
-    title: string;
-    description: string;
-    thumbnailSrc: string;
-    uploadedAt: string;
-    genres: Genre[];
-    categories: Category[];
-    // sponsors: string[];
-    visibility: "public" | "private";
-};
-
-// [
-//     {
-//         id: 1,
-//         title: "Sample Title 1",
-//         description: "Sample Description 1",
-//         thumbnailSrc: contentThumbnail,
-//         uploadedAt: "2023-10-27T12:00:00Z",
-//         genres: ["Action", "Drama", "Humor"],
-//         categories: ["Movies", "Cartoons", "Documentaries"],
-//         sponsors: ["Sponsor A", "Sponsor B"],
-//         visibility: "private",
-//     },
-//     {
-//         id: 2,
-//         title: "Sample Title 2",
-//         description: "Sample Description 2",
-//         thumbnailSrc: contentThumbnail,
-//         uploadedAt: "2023-10-27T13:30:00Z",
-//         genres: ["Comedy", "Romance"],
-//         categories: ["TV Shows"],
-//         sponsors: ["Sponsor C"],
-//         visibility: "public",
-//     },
-//     {
-//         id: 3,
-//         title: "Sample Title 1",
-//         description: "Sample Description 1",
-//         thumbnailSrc: contentThumbnail,
-//         uploadedAt: "2023-10-27T12:00:00Z",
-//         genres: ["Action", "Drama", "Humor"],
-//         categories: ["Movies", "Cartoons", "Documentaries"],
-//         sponsors: ["Sponsor A", "Sponsor B"],
-//         visibility: "private",
-//     },
-//     {
-//         id: 4,
-//         title: "Sample Title 2",
-//         description: "Sample Description 2",
-//         thumbnailSrc: contentThumbnail,
-//         uploadedAt: "2023-10-27T13:30:00Z",
-//         genres: ["Comedy", "Romance"],
-//         categories: ["TV Shows"],
-//         sponsors: ["Sponsor C"],
-//         visibility: "public",
-//     },
-//     {
-//         id: 5,
-//         title: "Sample Title 1",
-//         description: "Sample Description 1",
-//         thumbnailSrc: contentThumbnail,
-//         uploadedAt: "2023-10-27T12:00:00Z",
-//         genres: ["Action", "Drama", "Humor"],
-//         categories: ["Movies", "Cartoons", "Documentaries"],
-//         sponsors: ["Sponsor A", "Sponsor B"],
-//         visibility: "private",
-//     },
-// ]
+// type Content = {
+//     id: number;
+//     title: string;
+//     description: string;
+//     thumbnailSrc: string;
+//     uploadedAt: string;
+//     genres: Genre[];
+//     categories: Category[];
+//     // sponsors: string[];
+//     visibility: "public" | "private";
+// };
 
 export function MyContentsTable() {
     const [myContents, setMyContents] = useState<Content[]>([]);
@@ -139,7 +84,7 @@ export function MyContentsTable() {
                 />
                 <Column
                     header="Date Uploaded"
-                    field="uploadedAt"
+                    field="uploaded_at"
                     // style={{ minWidth: "100px" }}
                 />
                 <Column
@@ -150,14 +95,21 @@ export function MyContentsTable() {
                 <Column
                     header="Genres"
                     body={(content) =>
-                        GenresAndCategoriesTemplate(content, "genres")
+                        InfoLabelTemplate(content, "genres")
                     }
                     // style={{ minWidth: "200px" }}
                 />
                 <Column
                     header="Categories"
                     body={(content) =>
-                        GenresAndCategoriesTemplate(content, "categories")
+                        InfoLabelTemplate(content, "categories")
+                    }
+                    // style={{ minWidth: "200px" }}
+                />
+                <Column
+                    header="Sponsores"
+                    body={(content) =>
+                        InfoLabelTemplate(content, "sponsors")
                     }
                     // style={{ minWidth: "200px" }}
                 />
@@ -191,11 +143,20 @@ function ContentThumbnailTemplate(content: Content) {
     );
 }
 
-function GenresAndCategoriesTemplate(
+function InfoLabelTemplate(
     content: Content,
-    option: "genres" | "categories"
+    option: "genres" | "categories" | "sponsors"
 ) {
-    const data = option === "genres" ? content.genres : content.categories;
+    let data: Genre[] | Category[] | Sponsor[] = []
+    if (option === 'genres') {
+        data = content.genres
+    }
+    else if (option === 'categories') {
+        data = content.categories
+    }
+    else {
+        data = content.sponsors
+    }
     return (
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             {data.map((val, i) => (
@@ -243,6 +204,11 @@ function ActionsTemplate(props: {
                 content={content}
                 onDeleteContent={onDeleteContent}
             />
+            <EditContentDialog dialogVisible={editDialogVisible}
+                setDialogVisible={setEditDialogVisible}
+                content={content}
+                onEditContent={()=>{window.location.reload()}}
+            />
             <Button
                 type="button"
                 severity="secondary"
@@ -275,19 +241,70 @@ function EditContentDialog(props: {
     onEditContent: () => void;
 }) {
     const { dialogVisible, setDialogVisible, content, onEditContent } = props;
+    const [title, setTitle] = useState("")
+    const [description, setDescription] = useState("")
+    const [visibility, setVisibility] = useState(false)
 
-    const dialogFooter = () => {
-        return <div></div>;
-    };
+    const handleUpload = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        //TODO: panggil api
+    }
+
     return (
         <>
             <Dialog
                 visible={dialogVisible}
                 header={"Edit Content"}
                 onHide={() => setDialogVisible(false)}
-                footer={dialogFooter}
             >
-                Something
+                <form onSubmit={handleUpload}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "20px",
+                        }}
+                    >
+                        <div>
+                            <label style={{ display: "block" }}>
+                                Title
+                            </label>
+                            <InputText
+                                id="title"
+                                name="title"
+                                value={title}
+                                onChange={(e)=>{setTitle(e.target.value)}}
+                            />
+                        </div>
+                        <div>
+                            <label style={{ display: "block" }}>
+                                Description
+                            </label>
+                            <InputTextarea
+                                name="description"
+                                value={description}
+                                onChange={(e)=>{setDescription(e.target.value)}}
+                                style={{
+                                    width: "90%",
+                                    resize: "none",
+                                }}
+                                rows={5}
+                        />
+                        </div>
+                        <label>Visibility</label>
+                        <div>
+                            <Checkbox
+                                inputId="visibility"
+                                name="visibility"
+                                checked={visibility}
+                                onChange={(e)=>{setVisibility(e.checked!)}}
+                                style={{ marginRight: "8px" }}
+                            />
+                            <span>Public?</span>
+                        </div>
+                    </div>
+                    <Button style={{marginTop: "16px"}}>Save</Button>
+                </form>
             </Dialog>
         </>
     );

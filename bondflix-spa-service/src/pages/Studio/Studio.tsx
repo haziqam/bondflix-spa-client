@@ -10,6 +10,8 @@ export function Studio() {
             description: "",
             genres: [],
             categories: [],
+            sponsors: [],
+            visibility: false,
             content_file: location.state.video,
             thumbnail_file: location.state.thumbnail,
         });
