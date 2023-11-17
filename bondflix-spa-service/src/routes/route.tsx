@@ -27,6 +27,10 @@ export const router = createBrowserRouter(
         <Route path="/" errorElement={<Error />}>
             <Route index element={<Home />} />
             <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/sponsors" element={<Sponsors />} />
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/genres" element={<Genres />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route element={<DashboardBaseComponent />}>
@@ -38,10 +42,6 @@ export const router = createBrowserRouter(
                 <Route path="/upload" element={<Upload />} />
                 <Route path="/studio" element={<Studio />} />
                 <Route path="/myaccount" element={<MyAccount />} /> 
-                <Route path="/users" element={<Users />} />
-                <Route path="/sponsors" element={<Sponsors />} />
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/genres" element={<Genres />} />
             </Route>
         </Route>
     )
