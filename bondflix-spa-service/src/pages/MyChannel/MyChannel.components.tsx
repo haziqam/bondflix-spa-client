@@ -1,8 +1,13 @@
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
-import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
-import contentThumbnail from "../../assets/thumbnail1.jpg";
+import {
+    Dispatch,
+    FormEvent,
+    SetStateAction,
+    useEffect,
+    useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "primereact/dialog";
 import { Toast } from "primereact/toast";
@@ -10,6 +15,7 @@ import { useToast } from "../../hooks/useToast";
 import {
     deleteContent,
     getContentsByCreatorId,
+    updateContent,
 } from "../../services/content.service";
 import Cookies from "js-cookie";
 import { InputText } from "primereact/inputtext";
@@ -94,23 +100,17 @@ export function MyContentsTable() {
                 />
                 <Column
                     header="Genres"
-                    body={(content) =>
-                        InfoLabelTemplate(content, "genres")
-                    }
+                    body={(content) => InfoLabelTemplate(content, "genres")}
                     // style={{ minWidth: "200px" }}
                 />
                 <Column
                     header="Categories"
-                    body={(content) =>
-                        InfoLabelTemplate(content, "categories")
-                    }
+                    body={(content) => InfoLabelTemplate(content, "categories")}
                     // style={{ minWidth: "200px" }}
                 />
                 <Column
                     header="Sponsores"
-                    body={(content) =>
-                        InfoLabelTemplate(content, "sponsors")
-                    }
+                    body={(content) => InfoLabelTemplate(content, "sponsors")}
                     // style={{ minWidth: "200px" }}
                 />
                 <Column
@@ -147,15 +147,13 @@ function InfoLabelTemplate(
     content: Content,
     option: "genres" | "categories" | "sponsors"
 ) {
-    let data: Genre[] | Category[] | Sponsor[] = []
-    if (option === 'genres') {
-        data = content.genres
-    }
-    else if (option === 'categories') {
-        data = content.categories
-    }
-    else {
-        data = content.sponsors
+    let data: Genre[] | Category[] | Sponsor[] = [];
+    if (option === "genres") {
+        data = content.genres;
+    } else if (option === "categories") {
+        data = content.categories;
+    } else {
+        data = content.sponsors;
     }
     return (
         <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -204,10 +202,13 @@ function ActionsTemplate(props: {
                 content={content}
                 onDeleteContent={onDeleteContent}
             />
-            <EditContentDialog dialogVisible={editDialogVisible}
+            <EditContentDialog
+                dialogVisible={editDialogVisible}
                 setDialogVisible={setEditDialogVisible}
                 content={content}
-                onEditContent={()=>{window.location.reload()}}
+                onEditContent={() => {
+                    window.location.reload();
+                }}
             />
             <Button
                 type="button"
@@ -241,14 +242,27 @@ function EditContentDialog(props: {
     onEditContent: () => void;
 }) {
     const { dialogVisible, setDialogVisible, content, onEditContent } = props;
-    const [title, setTitle] = useState("")
-    const [description, setDescription] = useState("")
-    const [visibility, setVisibility] = useState(false)
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [visibility, setVisibility] = useState(false);
 
     const handleUpload = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         //TODO: panggil api
-    }
+        const formData = new FormData();
+        if (title.length !== 0) {
+            formData.append("title", title);
+        }
+        if (description.length !== 0) {
+            formData.append("description", description);
+        }
+        formData.append("visibility", `${visibility}`);
+        updateContent(content.id, formData).then((response) => {
+            if (response.success) {
+                onEditContent();
+            }
+        });
+    };
 
     return (
         <>
@@ -266,14 +280,14 @@ function EditContentDialog(props: {
                         }}
                     >
                         <div>
-                            <label style={{ display: "block" }}>
-                                Title
-                            </label>
+                            <label style={{ display: "block" }}>Title</label>
                             <InputText
                                 id="title"
                                 name="title"
                                 value={title}
-                                onChange={(e)=>{setTitle(e.target.value)}}
+                                onChange={(e) => {
+                                    setTitle(e.target.value);
+                                }}
                             />
                         </div>
                         <div>
@@ -283,13 +297,15 @@ function EditContentDialog(props: {
                             <InputTextarea
                                 name="description"
                                 value={description}
-                                onChange={(e)=>{setDescription(e.target.value)}}
+                                onChange={(e) => {
+                                    setDescription(e.target.value);
+                                }}
                                 style={{
                                     width: "90%",
                                     resize: "none",
                                 }}
                                 rows={5}
-                        />
+                            />
                         </div>
                         <label>Visibility</label>
                         <div>
@@ -297,13 +313,15 @@ function EditContentDialog(props: {
                                 inputId="visibility"
                                 name="visibility"
                                 checked={visibility}
-                                onChange={(e)=>{setVisibility(e.checked!)}}
+                                onChange={(e) => {
+                                    setVisibility(e.checked!);
+                                }}
                                 style={{ marginRight: "8px" }}
                             />
                             <span>Public?</span>
                         </div>
                     </div>
-                    <Button style={{marginTop: "16px"}}>Save</Button>
+                    <Button style={{ marginTop: "16px" }}>Save</Button>
                 </form>
             </Dialog>
         </>

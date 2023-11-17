@@ -34,19 +34,3 @@ export function SubscriptionsIcon() {
         </>
     );
 }
-
-export function UsersIcon() {
-    return <i className="pi pi-user" style={sharedIconStyle}></i>;
-}
-
-export function SponsorsIcon() {
-    return <i className="pi pi-sponsor" style={sharedIconStyle}></i>;
-}
-
-export function GenresIcon() {
-    return <i className="pi pi-genre" style={sharedIconStyle}></i>;
-}
-
-export function CategoriesIcon() {
-    return <i className="pi pi-category" style={sharedIconStyle}></i>;
-}

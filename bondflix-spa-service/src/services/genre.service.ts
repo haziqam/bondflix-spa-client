@@ -1,9 +1,9 @@
 import axiosInstance from "../lib/axios/axios";
 import axios from "axios";
 
-export async function getAllCategories(): Promise<ResponseData> {
+export async function getAllGenres(): Promise<ResponseData> {
     try {
-        const response = await axiosInstance.get("/categories", {
+        const response = await axiosInstance.get("/genres", {
             withCredentials: true,
         });
         return response.data;
@@ -19,16 +19,11 @@ export async function getAllCategories(): Promise<ResponseData> {
     }
 }
 
-export async function deleteCategory(
-    categoryId: number
-): Promise<ResponseData> {
+export async function deleteGenre(genreId: number): Promise<ResponseData> {
     try {
-        const response = await axiosInstance.delete(
-            `/categories/${categoryId}`,
-            {
-                withCredentials: true,
-            }
-        );
+        const response = await axiosInstance.delete(`/genres/${genreId}`, {
+            withCredentials: true,
+        });
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -42,12 +37,12 @@ export async function deleteCategory(
     }
 }
 
-export async function addCategory(categoryName: string): Promise<ResponseData> {
+export async function addGenre(genreName: string): Promise<ResponseData> {
     try {
         const response = await axiosInstance.post(
-            "/categories",
+            "/genres",
             {
-                name: categoryName,
+                name: genreName,
             },
             {
                 withCredentials: true,

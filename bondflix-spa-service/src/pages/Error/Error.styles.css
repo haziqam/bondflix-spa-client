@@ -2,7 +2,6 @@
 
 .error-container {
     /* Set the background image and adjust other background properties */
-    background-image: url('../../assets/netflix_bg.png');
     background-size: cover; 
     background-position: center; 
       
