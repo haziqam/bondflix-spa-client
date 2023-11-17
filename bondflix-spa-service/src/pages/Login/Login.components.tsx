@@ -34,12 +34,11 @@ export function LoginForm() {
         const parseResult = LoginSchema.safeParse(loginFormData);
         if (parseResult.success) {
             const response = await login(loginFormData);
-            const isAdmin = Cookies.get("isAdmin") === "true"
+            const isAdmin = Cookies.get("isAdmin") === "true";
             if (response.success) {
                 if (isAdmin) {
-                    navigate("/admin")
-                }
-                else {
+                    navigate("/admin/sponsors");
+                } else {
                     navigate("/dashboard");
                 }
             } else {
