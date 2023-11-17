@@ -1,12 +1,16 @@
 import { Card } from "primereact/card";
 import { TabMenu } from "primereact/tabmenu";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import contentThumbnail from "../../assets/thumbnail1.jpg";
-import channelProfilePic from "../../temp-video/profile.png";
 import { Button } from "primereact/button";
 import { searchContent } from "../../services/content.service";
 import { searchChannel } from "../../services/user.service";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+    isUserSubscribed,
+    subscribe,
+} from "../../services/subscription.service";
+import { useToast } from "../../hooks/useToast";
+import { Toast } from "primereact/toast";
 
 export function ResultsContent(props: { query: string }) {
     const [tabActiveIndex, setTabActiveIndex] = useState(0);
@@ -183,41 +187,79 @@ function ChannelSearchResults(props: { foundChannels: User[] }) {
 }
 
 function ChannelResultsCard(props: { channel: User }) {
+    const [subscribeButtonDisabled, setSubscribeButtonDisabled] =
+        useState(false);
+    const [isSubscribed, setIsSubscribed] = useState(false);
+    const { toastRef, showSuccess, showError } = useToast();
+
+    useEffect(() => {
+        isUserSubscribed(props.channel.id).then((response) => {
+            if (response.success && response.data == true) {
+                setIsSubscribed(true);
+                console.log("hereee");
+            }
+        });
+    }, []);
+
+    const handleSubscribe = () => {
+        subscribe(props.channel.id).then((response) => {
+            if (response.success) {
+                setIsSubscribed(true);
+                showSuccess(`Successfully subscribed to ${props.channel.name}`);
+            } else {
+                showError(
+                    `Failed to subscribe to ${props.channel.name}: ${response.message}`
+                );
+            }
+        });
+    };
+
     return (
-        <Card
-            pt={{
-                content: {
-                    style: {
-                        padding: "0",
+        <>
+            <Toast ref={toastRef} position="bottom-right" />
+            <Card
+                pt={{
+                    content: {
+                        style: {
+                            padding: "0",
+                        },
                     },
-                },
-            }}
-            style={{ backgroundColor: "#ececec" }}
-        >
-            <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-                <img
-                    src={channelProfilePic}
-                    alt="Channel profile picture"
+                }}
+                style={{ backgroundColor: "#ececec" }}
+            >
+                <div
                     style={{
-                        width: "120px",
-                        height: "120px",
-                        borderRadius: "50%",
-                    }}
-                />
-                <section>
-                    <h2 style={{ margin: "0" }}>{props.channel.name}</h2>
-                    <div
-                        style={{ color: "#a8a8a8" }}
-                    >{`@${props.channel.username}`}</div>
-                </section>
-                <Button
-                    style={{
-                        marginLeft: "200px",
+                        display: "flex",
+                        gap: "20px",
+                        alignItems: "center",
                     }}
                 >
-                    Subscribe
-                </Button>
-            </div>
-        </Card>
+                    <img
+                        src={`http://localhost:3000/static/pictures?id=${props.channel.id}`}
+                        alt="Channel profile picture"
+                        style={{
+                            width: "120px",
+                            height: "120px",
+                            borderRadius: "50%",
+                        }}
+                    />
+                    <section>
+                        <h2 style={{ margin: "0" }}>{props.channel.name}</h2>
+                        <div
+                            style={{ color: "#a8a8a8" }}
+                        >{`@${props.channel.username}`}</div>
+                    </section>
+                    <Button
+                        style={{
+                            marginLeft: "200px",
+                        }}
+                        disabled={isSubscribed}
+                        onClick={handleSubscribe}
+                    >
+                        Subscribe
+                    </Button>
+                </div>
+            </Card>
+        </>
     );
 }

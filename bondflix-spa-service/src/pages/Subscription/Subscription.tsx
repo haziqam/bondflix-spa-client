@@ -4,7 +4,7 @@ export function Subscription() {
     return (
         <div style={{ display: "flex", justifyContent: "center" }}>
             <div>
-                <h1>My Subscriptions</h1>
+                <h1>My Subscribers</h1>
                 <SubscriptionTable />
             </div>
         </div>
