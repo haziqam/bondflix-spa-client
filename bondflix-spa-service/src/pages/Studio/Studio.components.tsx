@@ -11,7 +11,7 @@ import {
     useEffect,
     useState,
 } from "react";
-import { getAllGenres } from "../../services/genre.servie";
+import { getAllGenres } from "../../services/genre.service";
 import { getAllCategories } from "../../services/category.service";
 import { createContent } from "../../services/content.service";
 import { useToast } from "../../hooks/useToast";

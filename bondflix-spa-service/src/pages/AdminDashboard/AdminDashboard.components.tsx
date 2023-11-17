@@ -1,30 +1,21 @@
 import "primeicons/primeicons.css";
-import "./AdminDashboard.styles.css";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
-import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { logout } from "../../services/auth.service";
 import { useAuthorize } from "../../hooks/useAuthorize";
 import { useToast } from "../../hooks/useToast";
-import { Card } from "primereact/card";
 import { Menu } from "primereact/menu";
 import { MenuItem } from "primereact/menuitem";
 import {
-    UsersIcon,
-    SponsorsIcon,
-    CategoriesIcon,
-    GenresIcon,
     LogoutIcon,
     HamburgerButtonIcon,
 } from "../../shared-components/Icons";
 import { BondflixLogo } from "../../shared-components/Logo";
-import { getAllContents } from "../../services/content.service";
 import Cookies from "js-cookie";
 
-export function DashboardBaseComponent() {
+export function AdminDashboardBaseComponent() {
     const { isAuthorized } = useAuthorize();
     const [userId, setUserId] = useState<number>();
     const navigate = useNavigate();
@@ -32,8 +23,6 @@ export function DashboardBaseComponent() {
     if (isAuthorized === false) {
         navigate("/login");
     }
-
-    // Masukin apakah dia admin atau engga
 
     const [sidebarVisible, setSidebarVisible] = useState(false);
     useEffect(() => {
@@ -70,118 +59,7 @@ export function DashboardBaseComponent() {
     );
 }
 
-export function DashboardContent() {
-    const [contents, setContents] = useState<Content[]>([]);
-    useEffect(() => {
-        getAllContents().then((fetchedContent) => {
-            setContents(fetchedContent.data as Content[]);
-        });
-    }, []);
 
-    return (
-        <div
-            style={{
-                width: "100%",
-                height: "100%",
-                display: "grid",
-                gridTemplateColumns: "repeat(4, 1fr)",
-                gap: "10px 10px",
-                padding: "10px 15px 15px 15px",
-            }}
-        >
-            {contents.map((content) => (
-                <ContentCard
-                    key={content.id}
-                    title={content.title}
-                    channelName={content.user.name}
-                    thumbnailSrc={`http://localhost:3000/static/thumbnails?id=${content.id}`}
-                    id={content.id}
-                />
-            ))}
-        </div>
-    );
-}
-
-function ContentCard(props: {
-    title: string;
-    channelName: string;
-    thumbnailSrc: string;
-    id: number;
-}) {
-    const { title, channelName, thumbnailSrc, id } = props;
-    const navigate = useNavigate();
-    const ContentHeader = (
-        <img
-            src={thumbnailSrc}
-            alt="Video Thumbnail"
-            style={{
-                objectFit: "cover",
-                borderTopLeftRadius: "6px",
-                borderTopRightRadius: "6px",
-                width: "100%",
-                height: "168px",
-            }}
-        />
-    );
-
-    const ContentFooter = () => {
-        return (
-            <div>
-                <div
-                    style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: "2",
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                    }}
-                >
-                    <h2 style={{ margin: "0", fontSize: "1rem" }}>{title}</h2>
-                </div>
-
-                <div
-                    style={{
-                        display: "-webkit-box",
-                        WebkitLineClamp: "1",
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        fontSize: "0.75rem",
-                        paddingTop: "5px",
-                        color: "#9b9b9b",
-                    }}
-                >
-                    {channelName}
-                </div>
-            </div>
-        );
-    };
-
-    const handleClick = () => {
-        const uri = `/watch?id=${id}`;
-        navigate(encodeURI(uri));
-    };
-
-    return (
-        <Card
-            header={ContentHeader}
-            footer={ContentFooter}
-            pt={{
-                footer: {
-                    style: {
-                        paddingTop: "0",
-                    },
-                },
-                body: {
-                    style: {
-                        padding: "0.5rem",
-                    },
-                },
-            }}
-            style={{ width: "300px", height: "225px" }}
-            className="ContentCard"
-            onClick={handleClick}
-        ></Card>
-    );
-}
 
 function DashboardSidebar(props: {
     sidebarVisible: boolean;
@@ -204,39 +82,27 @@ function DashboardSidebar(props: {
     };
 
     const items: MenuItem[] = [
-        // User
-        {
-            label: "Users",
-            icon: <UsersIcon />,
-            command: () => {
-                navigate("/users");
-                setSidebarVisible(false);
-            },
-        },
         // Sponsor
         {
             label: "Sponsors",
-            icon: <SponsorsIcon />,
             command: () => {
-                navigate("/sponsors");
+                navigate("/admin/sponsors");
                 setSidebarVisible(false);
             },
         },
         // Genre
         {
             label: "Genres",
-            icon: <GenresIcon />,
             command: () => {
-                navigate("/genres");
+                navigate("/admin/genres");
                 setSidebarVisible(false);
             },
         },
         // Category
         {
             label: "Categories",
-            icon: <CategoriesIcon />,
             command: () => {
-                navigate("/categories");
+                navigate("/admin/categories");
                 setSidebarVisible(false);
             },
         },
@@ -291,7 +157,7 @@ function Masthead(props: {
                 zIndex: "99",
             }}
         >
-            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around" }}>
                 <button
                     className="SidebarMenuButton"
                     style={{
@@ -317,7 +183,6 @@ function Masthead(props: {
                 </button>
                 <BondflixLogo />
             </div>
-            <SearchBar />
             <Link to={"/myaccount"}>
                 <img
                     src={`http://localhost:3000/static/pictures?id=${userId}`}
@@ -329,30 +194,6 @@ function Masthead(props: {
                     }}
                 />
             </Link>
-        </div>
-    );
-}
-
-function SearchBar() {
-    const [searchQuery, setSearchQuery] = useState("");
-    const navigate = useNavigate();
-
-    const handleSearchClick = () => {
-        if (searchQuery !== "") {
-            const uri = `/results?search_query=${searchQuery}`;
-            navigate(encodeURI(uri));
-        }
-    };
-    return (
-        <div className="p-inputgroup" style={{ width: "600px" }}>
-            <InputText
-                value={searchQuery}
-                placeholder="Search"
-                onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                }}
-            />
-            <Button icon="pi pi-search" onClick={handleSearchClick} />
         </div>
     );
 }

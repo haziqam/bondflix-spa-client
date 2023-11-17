@@ -3,7 +3,7 @@ type Content = {
     creator_id: number;
     description: string;
     id: number;
-    release_date: string;
+    // release_date: string;
     thumbnail_file_path: string;
     title: string;
     uploaded_at: string;

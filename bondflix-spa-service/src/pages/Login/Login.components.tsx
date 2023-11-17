@@ -9,6 +9,7 @@ import { useToast } from "../../hooks/useToast";
 import { Toast } from "primereact/toast";
 import { ZodIssue } from "zod";
 import { LoginSchema } from "../../lib/zod/auth.schema";
+import Cookies from "js-cookie";
 //TODO:
 /**
  * 1. Validasi field
@@ -33,8 +34,14 @@ export function LoginForm() {
         const parseResult = LoginSchema.safeParse(loginFormData);
         if (parseResult.success) {
             const response = await login(loginFormData);
+            const isAdmin = Cookies.get("isAdmin") === "true"
             if (response.success) {
-                navigate("/dashboard");
+                if (isAdmin) {
+                    navigate("/admin")
+                }
+                else {
+                    navigate("/dashboard");
+                }
             } else {
                 showError(`Failed to login: ${response.message}`);
             }

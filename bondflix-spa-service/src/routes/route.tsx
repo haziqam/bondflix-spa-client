@@ -17,20 +17,20 @@ import { Upload } from "../pages/Upload/Upload.tsx";
 import { Studio } from "../pages/Studio/Studio.tsx";
 import { AdminDashboard } from "../pages/AdminDashboard/AdminDashboard.tsx";
 import { MyAccount } from "../pages/MyAccount/MyAccount.tsx";
-import { Users } from "../pages/Users/Users.tsx";
 import { Sponsors } from "../pages/Sponsors/Sponsors.tsx";
 import { Categories } from "../pages/Categories/Categories.tsx";
 import { Genres } from "../pages/Genres/Genres.tsx";
+import { AdminDashboardBaseComponent } from "../pages/AdminDashboard/AdminDashboard.components.tsx";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" errorElement={<Error />}>
             <Route index element={<Home />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/users" element={<Users />} />
-                <Route path="/sponsors" element={<Sponsors />} />
-                <Route path="/categories" element={<Categories />} />
-                <Route path="/genres" element={<Genres />} />
+            <Route path="/admin" element={<AdminDashboardBaseComponent />}>
+                <Route path="sponsors" element={<Sponsors />} />
+                <Route path="categories" element={<Categories />} />
+                <Route path="genres" element={<Genres />} />
+            </Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route element={<DashboardBaseComponent />}>
