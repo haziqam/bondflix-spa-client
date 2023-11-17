@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
@@ -6,6 +6,8 @@ import { useToast } from "../../hooks/useToast";
 import { Toast } from "primereact/toast";
 import profilePicSrc from "../../temp-video/profile.png";
 import { Dialog } from "primereact/dialog";
+import { getSubscribers } from "../../services/subscription.service";
+import Cookies from "js-cookie";
 
 type Channel = {
     id: number;
@@ -15,62 +17,37 @@ type Channel = {
 };
 
 export function SubscriptionTable() {
-    const [subscribedChannels, setSubscribedChannel] = useState<Channel[]>([
-        {
-            id: 111,
-            username: "wkwkwkw",
-            name: "hellooo",
-            profilePicSrc: profilePicSrc,
-        },
-        {
-            id: 112,
-            username: "wkwkwkw",
-            name: "my",
-            profilePicSrc: profilePicSrc,
-        },
-        {
-            id: 113,
-            username: "wkwkwkw",
-            name: "name",
-            profilePicSrc: profilePicSrc,
-        },
-        {
-            id: 114,
-            username: "wkwkwkw",
-            name: "is",
-            profilePicSrc: profilePicSrc,
-        },
-        {
-            id: 115,
-            username: "wkwkwkw",
-            name: "haziq",
-            profilePicSrc: profilePicSrc,
-        },
-    ]);
+    const [subscribers, setSubscribers] = useState<Channel[]>();
+    useEffect(()=>{
+        const userId = parseInt(Cookies.get("userId")!);
+        getSubscribers(userId).then((response) => {
+            setSubscribers(response.data as Channel[])
+        })
+    }, [])
 
     const { toastRef, showSuccess } = useToast();
-    const removeSubscribedChannel = (id: number) => {
-        const unsubscribedChannelUsername = subscribedChannels.find(
-            (el) => el.id === id
-        )?.username;
-        setSubscribedChannel((prev) => prev.filter((el) => el.id !== id));
-        showSuccess(
-            `Unsubscribed @${unsubscribedChannelUsername} successfully`
-        );
-    };
+    // const removeSubscribedChannel = (id: number) => {
+    //     const unsubscribedChannelUsername = subscribers.find(
+    //         (el) => el.id === id
+    //     )?.username;
+    //     setSubscribers((prev) => prev.filter((el) => el.id !== id));
+    //     showSuccess(
+    //         `Unsubscribed @${unsubscribedChannelUsername} successfully`
+    //     );
+    // };
 
     return (
-        <div style={{ minWidth: "700px" }}>
+        <div style={{ width: "500px" }}>
             <Toast ref={toastRef} position="bottom-right" />
             <DataTable
-                value={subscribedChannels}
+                value={subscribers}
                 dataKey="id"
                 // loading={loading}
                 emptyMessage="No Subscriptions."
                 showGridlines
             >
-                <Column header="Channels" body={ChannelInfoTemplate} />
-                <Column
+                <Column header="Subscribers" body={ChannelInfoTemplate} />
+                {/* <Column
                     header="Action"
                     body={(channel) => (
                         <ChannelActionTemplate
@@ -78,14 +55,14 @@ export function SubscriptionTable() {
                             onUnsubscribe={removeSubscribedChannel}
                         />
                     )}
-                />
+                /> */}
             </DataTable>
         </div>
     );
 }
 
 function ChannelInfoTemplate(channel: Channel) {
-    const { username, name, profilePicSrc } = channel;
+    const { username, name, id } = channel;
 
     return (
         <div
@@ -94,7 +71,7 @@ function ChannelInfoTemplate(channel: Channel) {
             }}
         >
             <img
-                src={profilePicSrc}
+                src={`http://localhost:3000/static/pictures?id=${id}`}
                 alt="Channel profile picture"
                 style={{
                     width: "40px",

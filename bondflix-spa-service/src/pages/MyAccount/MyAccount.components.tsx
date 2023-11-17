@@ -151,7 +151,7 @@ export function AccountSettingsForm() {
                     {getErrorMessages("password")}
                 </div>
                 <div>
-                    <label style={{ display: "block" }}>ConfirmPassword</label>
+                    <label style={{ display: "block" }}>Confirm Password</label>
                     <Password
                         id="confirmPassword"
                         name="confirmPassword"

@@ -1,9 +1,8 @@
-import channelProfilePic from "../../temp-video/profile.png";
 import { Button } from "primereact/button";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { Divider } from "primereact/divider";
 
-export function VideoContainer(props: { contentId: number }) {
+export function VideoContainer(props: { contentId: number}) {
     return (
         <div
             style={{
@@ -28,6 +27,7 @@ export function VideoInformationContainer(props: {
     title: string;
     channelName: string;
     channelUsername: string;
+    channelId: number;
     uploadedAt: string;
     genres: Genre[];
     categories: Category[];
@@ -38,6 +38,7 @@ export function VideoInformationContainer(props: {
         title,
         channelName,
         channelUsername,
+        channelId,
         uploadedAt,
         genres,
         categories,
@@ -65,6 +66,7 @@ export function VideoInformationContainer(props: {
             <ChannelInfoBox
                 channelName={channelName}
                 channelUsername={channelUsername}
+                channelId={channelId}
             />
             <DescriptionBox
                 uploadedAt={uploadedAt}
@@ -80,8 +82,9 @@ export function VideoInformationContainer(props: {
 function ChannelInfoBox(props: {
     channelName: string;
     channelUsername: string;
+    channelId: number;
 }) {
-    const { channelName, channelUsername } = props;
+    const { channelName, channelUsername, channelId} = props;
     return (
         <div
             style={{
@@ -92,7 +95,7 @@ function ChannelInfoBox(props: {
         >
             <div style={{ display: "flex" }}>
                 <img
-                    src={channelProfilePic}
+                    src={`http://localhost:3000/static/pictures?id=${channelId}`}
                     alt="Channel profile picture"
                     style={{
                         width: "40px",
@@ -125,7 +128,7 @@ function ChannelInfoBox(props: {
             </div>
 
             <div>
-                <Button>Subscribe</Button>
+                {/* <Button>Subscribe</Button> */}
             </div>
         </div>
     );
