@@ -10,7 +10,7 @@ export const ErrorContent: React.FC<ErrorContentProps> = ({ onReturnHome }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="error-container" style={{ backgroundImage: `url('./assets/netflix_bg.png')` }}>
+    <div className="error-container">
       <div className="error-content">
         <div className="error-text">
           <h1 className="error-heading">Sorry, something went wrong</h1>

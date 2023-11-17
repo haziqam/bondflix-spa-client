@@ -1,6 +1,8 @@
-import { AdminDashboardContent } from "./AdminDashboard.components.tsx";
+import { DashboardContent } from "./AdminDashboard.components.tsx";
 
 export function AdminDashboard() {
-    return <h1> This is Admin Dashboard </h1>;
-    //<AdminDashboardContent />;
+    //return <h1> This is Admin Dashboard </h1>;
+    return <DashboardContent />;
 }
+
+// user, sponsor, genre, category
